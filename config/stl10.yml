@@ -1,0 +1,42 @@
+preset: 'none'
+
+model:
+    n_epochs: 600
+    warmup_epochs: 10  # Scheduler linear warmup
+    masking_ratio: 0.75
+    lr: 0.0003 
+    momentum: 0.9
+    weight_decay: 0.0005
+    beta_1: 0.9
+    beta_2: 0.95
+
+architecture:
+    decoder: 
+        dim: 512
+        depth: 2
+        heads: 4
+        dim_head: 64
+
+    encoder:
+        patch_size: 6
+        dim: 512
+        depth: 6
+        heads: 8
+        mlp_dim: 2048
+        arch: 'vit'
+      
+data:
+    image_size: 96
+    channels: 3
+    classes: 10
+    test_size: 0.3 
+    batch_size: 256
+
+linear:
+    n_epochs: 50
+    opt: 'adam'
+    lr: 0.0003
+    batch_size: 300
+    momentum: 0
+    nesterov: False
+    weight_decay: 0.5
