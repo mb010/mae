@@ -39,47 +39,47 @@ class Lightning_Eval(pl.LightningModule):
 
         self.logger.log_hyperparams(logging_params)
 
-    def on_validation_start(self):
-        ## List of evaluation classes and dataloader_idx to use ##
-        self.train_list = []
-        self.val_list = [name for (name, _) in self.trainer.datamodule.data["val"]]
-        self.test_list = [name for (name, _) in self.trainer.datamodule.data["test"]]
+    # def on_validation_start(self):
+    #     ## List of evaluation classes and dataloader_idx to use ##
+    #     self.train_list = []
+    #     self.val_list = [name for (name, _) in self.trainer.datamodule.data["val"]]
+    #     self.test_list = [name for (name, _) in self.trainer.datamodule.data["test"]]
 
-        ## Prepare for linear evaluation ##
-        # Cycle through validation data-sets
-        for d in self.trainer.datamodule.data["eval_train"]:
-            # Initialise linear eval data-set and run setup with training data
-            lin_eval = Linear_Eval(self, d, self.val_list, self.test_list)
-            lin_eval.setup(self, d["data"])
+    #     ## Prepare for linear evaluation ##
+    #     # Cycle through validation data-sets
+    #     for d in self.trainer.datamodule.data["eval_train"]:
+    #         # Initialise linear eval data-set and run setup with training data
+    #         lin_eval = Linear_Eval(self, d, self.val_list, self.test_list)
+    #         lin_eval.setup(self, d["data"])
 
-            # Add to list of evaluations
-            self.train_list.append(lin_eval)
+    #         # Add to list of evaluations
+    #         self.train_list.append(lin_eval)
 
-    def validation_step(self, batch, batch_idx, dataloader_idx=0):
-        x, y = batch
-        val_name = self.val_list[dataloader_idx]
+    # def validation_step(self, batch, batch_idx, dataloader_idx=0):
+    #     x, y = batch
+    #     val_name = self.val_list[dataloader_idx]
 
-        # Run validation step for filtered data-sets
-        for val in self.train_list:
-            val.step(self, x, y, val_name, stage="val")
+    #     # Run validation step for filtered data-sets
+    #     for val in self.train_list:
+    #         val.step(self, x, y, val_name, stage="val")
 
-    def on_validation_epoch_end(self):
-        # Complete validation for all data-sets
-        for val in self.train_list:
-            val.end(self, stage="val")
+    # def on_validation_epoch_end(self):
+    #     # Complete validation for all data-sets
+    #     for val in self.train_list:
+    #         val.end(self, stage="val")
 
-    def test_step(self, batch, batch_idx, dataloader_idx=0):
-        x, y = batch
-        test_name = self.test_list[dataloader_idx]
+    # def test_step(self, batch, batch_idx, dataloader_idx=0):
+    #     x, y = batch
+    #     test_name = self.test_list[dataloader_idx]
 
-        # Run validation step for filtered data-sets
-        for val in self.train_list:
-            val.step(self, x, y, test_name, stage="test")
+    #     # Run validation step for filtered data-sets
+    #     for val in self.train_list:
+    #         val.step(self, x, y, test_name, stage="test")
 
-    def on_test_epoch_end(self):
-        # Complete validation for all data-sets
-        for val in self.train_list:
-            val.end(self, stage="test")
+    # def on_test_epoch_end(self):
+    #     # Complete validation for all data-sets
+    #     for val in self.train_list:
+    #         val.end(self, stage="test")
 
 
 class Data_Eval:
@@ -153,8 +153,9 @@ class Linear_Eval(Data_Eval):
             acc.reset()
 
     def step(self, pl_module, X, y, val_name, stage):
-        X = pl_module(X).squeeze()
+        X = pl_module(X).squeeze((-1, -2))
         X, y = X.detach().cpu().numpy(), y.detach().cpu()
+        print(X.shape)
         X = self.scaler.transform(X)
         preds = self.model.predict(X)
 

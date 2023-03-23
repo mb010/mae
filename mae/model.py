@@ -167,10 +167,11 @@ class MAE(Lightning_Eval):
     def configure_optimizers(self):
         params = self.parameters()
 
-        opt = (
-            torch.optim.AdamW(
-                params, lr=self.lr, betas=(self.beta_1, self.beta_2), weight_decay=self.weight_decay
-            ),
+        opt = torch.optim.AdamW(
+            params,
+            lr=self.lr,
+            betas=(self.beta_2, self.beta_2),
+            weight_decay=self.weight_decay,
         )
 
         scheduler = CosineLinearWarmupScheduler(

@@ -119,12 +119,12 @@ class STL10_DataModule(Base_DataModule):
         STL10(root=self.path, split="train+unlabeled", download=True)
         STL10(root=self.path, split="test", download=True)
 
-    def setup(self):
+    def setup(self, stage=None):
         train_transform = T.Compose(
             [
                 T.ToTensor(),
                 T.Normalize(self.mu, self.sig),
-                T.RandomResizedCrop(96, scale=(0.2, 1.0)),
+                T.RandomResizedCrop(96, scale=(0.2, 1.0), antialias=True),
             ]
         )
         test_transform = T.Compose([T.ToTensor(), T.Normalize(self.mu, self.sig)])
@@ -143,10 +143,11 @@ class STL10_DataModule(Base_DataModule):
 
         # List of (name, train_dataset) tuples to train linear evaluation layer
         self.data["eval_train"] = [
-            (
-                "STl10_train",
-                STL10(root=self.path, split="train", transform=test_transform),
-            ),
+            {
+                "name": "STl10_train",
+                "n_classes": 10,
+                "data": STL10(root=self.path, split="train", transform=test_transform),
+            },
         ]
 
 
