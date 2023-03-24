@@ -23,6 +23,7 @@ class Base_DataModule(pl.LightningDataModule):
         super().__init__()
 
         self.path = path
+        self.batch_size = batch_size
 
         self.dataloading_kwargs = dataloading_kwargs
         self.data = {}
@@ -31,7 +32,9 @@ class Base_DataModule(pl.LightningDataModule):
         return
 
     def train_dataloader(self):
-        loader = DataLoader(self.data["train"], shuffle=True, **self.dataloading_kwargs)
+        loader = DataLoader(
+            self.data["train"], batch_size=self.batch_size, shuffle=True, **self.dataloading_kwargs
+        )
         return loader
 
     def val_dataloader(self):
