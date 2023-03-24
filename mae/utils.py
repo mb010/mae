@@ -18,8 +18,16 @@ def CosineLinearWarmupScheduler(opt, warmup_epochs, max_epochs):
     Returns:
         torch.optim.lr_scheduler.LambdaLR: Learning rate scheduler.
     """
+    # Reduce linear warmup epochs to account for 0th epoch
+    warmup_epochs -= 1
+
+    # Linear warmup schedule
     warmup_lr_schedule = lambda t: (t + 1) / warmup_epochs if t <= warmup_epochs else 1.0
+
+    # Cosine annealing schedule
     cosine_lr_schedule = lambda t: 0.5 * (1 + cos(pi * t / max_epochs))
+
+    # Combine schedules
     lr_schedule = lambda t: warmup_lr_schedule(t) * cosine_lr_schedule(t)
 
     return LambdaLR(opt, lr_schedule)
