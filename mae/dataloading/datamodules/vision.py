@@ -39,65 +39,17 @@ class Base_DataModule(pl.LightningDataModule):
 
     def val_dataloader(self):
         loaders = [
-            DataLoader(data, shuffle=False, **self.dataloading_kwargs) for _, data in self.data["val"]
+            DataLoader(data, shuffle=False, batch_size=1028, **self.dataloading_kwargs)
+            for _, data in self.data["val"]
         ]
         return loaders
 
     def test_dataloader(self):
         loaders = [
-            DataLoader(data, batch_size=250, shuffle=False, **self.dataloading_kwargs)
+            DataLoader(data, batch_size=1028, shuffle=False, **self.dataloading_kwargs)
             for _, data in self.data["test"]
         ]
         return loaders
-
-
-class FineTuning_DataModule(pl.LightningDataModule):
-    def __init__(self, config):
-        super().__init__()
-
-        # override default paths via config if desired
-        paths = Path_Handler(**config.get("paths_to_override", {}))
-        path_dict = paths._dict()
-        self.path = path_dict[config["dataset"]]
-
-        self.config = config
-
-        self.mu, self.sig = config["data"]["mu"], config["data"]["sig"]
-
-        self.data = {}
-
-    def prepare_data(self):
-        return
-
-    def train_dataloader(self):
-        loader = DataLoader(
-            self.data["train"],
-            batch_size=self.config["finetune"]["batch_size"],
-            num_workers=8,
-            prefetch_factor=20,
-            shuffle=True,
-        )
-        return loader
-
-    def val_dataloader(self):
-        loader = DataLoader(
-            self.data["val"],
-            batch_size=200,
-            num_workers=8,
-            prefetch_factor=20,
-            shuffle=False,
-        )
-        return loader
-
-    def test_dataloader(self):
-        loader = DataLoader(
-            self.data["test"],
-            batch_size=200,
-            num_workers=8,
-            prefetch_factor=20,
-            shuffle=False,
-        )
-        return loader
 
 
 class STL10_DataModule(Base_DataModule):
