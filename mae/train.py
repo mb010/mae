@@ -62,8 +62,7 @@ def run_pretraining(config, datamodule, experiment_dir, wandb_logger):
         # log_every_n_steps=200,
     )
 
-    # Initialise model #        # Initialize encoder and extract dimensions
-
+    # Initialise model #
     encoder = ViT(
         image_size=config["data"]["image_size"],
         channels=config["data"]["channels"],
