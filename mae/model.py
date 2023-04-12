@@ -84,6 +84,61 @@ class MAE(Lightning_Eval):
         """
         return self.encoder(x)  # dimension (batch, features), features from config e.g. 512
 
+    def img_to_reconstruction(self, x):
+        # Get patches from image
+        patches = self.to_patch(x)
+
+        # Get batch size and number of patches
+        batch, num_patches, *_ = patches.shape
+
+        # Patch to encoder tokens and add positions
+        tokens = self.patch_to_emb(patches)
+        tokens = tokens + self.encoder.pos_embedding[:, 1 : (num_patches + 1)]
+
+        # Calculate number of patches to mask
+        num_masked = int(self.masking_ratio * num_patches)
+
+        # Get random indices to choose random masked patches
+        rand_indices = torch.rand(batch, num_patches).argsort(dim=-1).to(self.device)
+
+        # Save masked and unmasked indices
+        masked_indices, unmasked_indices = (
+            rand_indices[:, :num_masked],
+            rand_indices[:, num_masked:],
+        )
+
+        # Get the unmasked tokens to be encoded
+        batch_range = torch.arange(batch)[:, None]
+        tokens = tokens[batch_range, unmasked_indices]
+
+        # Get the patches to be masked for the final reconstruction loss
+        masked_patches = patches[batch_range, masked_indices]
+
+        # Attend with vision transformer
+        encoded_tokens = self.encoder.transformer(tokens)
+
+        # Project encoder to decoder dimensions, if they are not equal,
+        # the paper says you can get away with a smaller dimension for decoder
+        decoder_tokens = self.enc2dec(encoded_tokens)
+
+        # Reapply decoder position embedding to unmasked tokens
+        decoder_tokens = decoder_tokens + self.decoder_pos_emb(unmasked_indices)
+
+        # Repeat mask tokens for number of masked, and add the positions
+        # using the masked indices derived above
+        mask_tokens = repeat(self.mask_token, "d -> b n d", b=batch, n=num_masked)
+        mask_tokens = mask_tokens + self.decoder_pos_emb(masked_indices)
+
+        # Concat the masked tokens to the decoder tokens and attend with decoder
+        decoder_tokens = torch.cat((mask_tokens, decoder_tokens), dim=1)
+        decoded_tokens = self.decoder(decoder_tokens)
+
+        # Splice out the mask tokens
+        mask_tokens = decoded_tokens[:, :num_masked]
+
+        # Project to pixel values
+        pred_pixel_values = self.to_pixels(mask_tokens)
+
     def training_step(self, batch, batch_idx):
         """
         Training step for MAE model.
