@@ -12,7 +12,7 @@ model:
 
 architecture:
     encoder:
-        preset: 'vit_small'
+        preset: 'vit_small' # ['vit_small', 'vit_base', 'vit_large']
         patch_size: 8
         embed_dim: 768
         depth: 12
@@ -20,7 +20,7 @@ architecture:
         mlp_ratio: 4
   
     decoder: 
-        preset: 'small'
+        preset: 'small' # ['none', 'default', 'small']
         embed_dim: 512
         depth: 8
         num_heads: 16
