@@ -12,24 +12,24 @@ model:
 
 architecture:
     encoder:
-        patch_size: 16
-        dim: 256
-        depth: 6
-        heads: 8
-        mlp_dim: 1024
-        arch: 'vit'
+        preset: 'vit_small'
+        patch_size: 8
+        embed_dim: 768
+        depth: 12
+        num_heads: 12
+        mlp_ratio: 4
   
     decoder: 
-        dim: 256
-        depth: 2
-        heads: 4
-        dim_head: 64
+        preset: 'small'
+        embed_dim: 512
+        depth: 8
+        num_heads: 16
 data:
-    image_size: 96
-    channels: 3
+    img_size: 96
+    in_chans: 3
     classes: 10
     test_size: 0.3 
-    batch_size: 2048
+    batch_size: 1024
 
 linear:
     n_epochs: 50

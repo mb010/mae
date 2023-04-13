@@ -82,6 +82,9 @@ class ViT_Encoder(timm.models.vision_transformer.VisionTransformer):
     ):
         super().__init__(**kwargs)
 
+        self.patch_size = self.patch_embed.patch_size[0]
+        self.in_chans = self.patch_embed.proj.in_channels
+
         self.global_pool = global_pool
         if self.global_pool:
             norm_layer = kwargs["norm_layer"]
