@@ -4,15 +4,15 @@ import logging
 import torch
 
 
-from mae.config import load_config, update_config
+from config import load_config
 from dataloading.datamodules import datasets
 from paths import Path_Handler, create_path
 from pytorch_lightning.callbacks import LearningRateMonitor
 
 from finetune.main import run_finetuning
 from finetune.dataloading import finetune_datasets
-from .model_timm import MAE
-from .vit import ViT_Encoder, Transformer
+from model_timm import MAE
+from vit import ViT_Encoder, Transformer
 
 
 def run_pretraining(config, datamodule, experiment_dir, wandb_logger):
@@ -100,7 +100,6 @@ def main():
     ## Load up config from yml files ##
     config = load_config()
     # Merges both configs together. Indexes second config based on the 'project_name' parameter.
-    update_config(config)
 
     wandb.init(project=config["project_name"])
 
