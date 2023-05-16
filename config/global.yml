@@ -1,4 +1,4 @@
-project_name: 'fourier_mae'
+project_name: 'F-MAE'
 dataset: 'fits'
 seed: 42
 

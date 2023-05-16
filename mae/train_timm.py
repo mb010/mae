@@ -11,8 +11,8 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 
 from finetune.main import run_finetuning
 from finetune.dataloading import finetune_datasets
-from mae.model_timm import MAE
-from mae.vit import ViT_Encoder, Transformer
+from .model_timm import MAE
+from .vit import ViT_Encoder, Transformer
 
 
 def run_pretraining(config, datamodule, experiment_dir, wandb_logger):
