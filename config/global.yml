@@ -1,6 +1,6 @@
-project_name: 'mae'
-dataset: 'stl10'
-seed: 69
+project_name: 'fourier_mae'
+dataset: 'fits'
+seed: 42
 
 trainer:
   accelerator: 'gpu' # set to 1 to disable multi gpu training
@@ -8,7 +8,7 @@ trainer:
   num_nodes: 1
   strategy: 'auto' # set to null to disable multi gpu training
   fast_dev_run: False # debugging mode
-  precision: 32 # [16, 32, 'bf16'], often overriden
+  precision: bf16 # [16, 32, 'bf16'], often overriden
   deterministic: True
 
 dataloading:
