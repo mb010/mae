@@ -46,20 +46,42 @@ class Base_DataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         loader = DataLoader(
-            self.data["train"], batch_size=self.batch_size, shuffle=True, **self.dataloading_kwargs
+            self.data["train"],
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+            pin_memory=self.pin_memory,
+            prefetch_factor=self.prefetch_factor,
+            persistent_workers=self.persistent_workers,
         )
         return loader
 
     def val_dataloader(self):
         loaders = [
-            DataLoader(data, shuffle=False, batch_size=1028, **self.dataloading_kwargs)
+            DataLoader(
+                data,
+                shuffle=False,
+                batch_size=1028,
+                num_workers=self.num_workers,
+                pin_memory=self.pin_memory,
+                prefetch_factor=self.prefetch_factor,
+                persistent_workers=self.persistent_workers,
+            )
             for _, data in self.data["val"]
         ]
         return loaders
 
     def test_dataloader(self):
         loaders = [
-            DataLoader(data, batch_size=1028, shuffle=False, **self.dataloading_kwargs)
+            DataLoader(
+                data,
+                shuffle=False,
+                batch_size=1028,
+                num_workers=self.num_workers,
+                pin_memory=self.pin_memory,
+                prefetch_factor=self.prefetch_factor,
+                persistent_workers=self.persistent_workers,
+            )
             for _, data in self.data["test"]
         ]
         return loaders

@@ -31,12 +31,12 @@ class RGZ_DataModule(Base_DataModule):
         **kwargs,
     ):
         super().__init__(
-            path,
-            batch_size,
-            num_workers,
-            prefetch_factor,
-            persistent_workers,
-            pin_memory,
+            path=path,
+            batch_size=batch_size,
+            num_workers=num_workers,
+            prefetch_factor=prefetch_factor,
+            persistent_workers=persistent_workers,
+            pin_memory=pin_memory,
             **kwargs,
         )
 
