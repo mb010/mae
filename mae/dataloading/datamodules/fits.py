@@ -22,7 +22,7 @@ import astroaugmentations as AA
 import torch.fft as fft
 
 
-class FIRST_DataModule(Base_DataModule):
+class FITS_DataModule(Base_DataModule):
     """DataModule for FITS files of your choice.
 
     Args:

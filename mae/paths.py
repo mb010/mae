@@ -26,6 +26,8 @@ class Path_Handler:
     def fill_dict(self):
         """Create dictionary of required paths"""
 
+        self.path_dict["fits_mb"] = self.path_dict["data"] / "MiraBest_FITS"
+        self.path_dict["fits"] = self.path_dict["data"] / "FIRST"
         self.path_dict["rgz"] = self.path_dict["data"] / "rgz"
         self.path_dict["mb"] = self.path_dict["data"] / "mb"
         self.path_dict["imagenette"] = self.path_dict["data"] / "imagenette-160"
