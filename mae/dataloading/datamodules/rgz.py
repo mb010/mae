@@ -20,8 +20,26 @@ from astroaugmentations.datasets.MiraBest_F import MBFRFull, MBFRConfident, MBFR
 
 
 class RGZ_DataModule(Base_DataModule):
-    def __init__(self, path, batch_size: int, dataloading_kwargs: Dict):
-        super().__init__(path, batch_size, dataloading_kwargs)
+    def __init__(
+        self,
+        path,
+        batch_size: int,
+        num_workers: int = 8,
+        prefetch_factor: int = 30,
+        persistent_workers: bool = True,
+        pin_memory: bool = True,
+        **kwargs,
+    ):
+        super().__init__(
+            path,
+            batch_size,
+            num_workers,
+            prefetch_factor,
+            persistent_workers,
+            pin_memory,
+            **kwargs,
+        )
+
         self.mu, self.sigma = (0.008008896,), (0.05303395,)
 
     def prepare_data(self):

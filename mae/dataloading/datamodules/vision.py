@@ -13,7 +13,16 @@ from mae.paths import Path_Handler
 
 
 class Base_DataModule(pl.LightningDataModule):
-    def __init__(self, path, batch_size: int, dataloading_kwargs: Dict):
+    def __init__(
+        self,
+        path,
+        batch_size: int,
+        num_workers: int = 8,
+        prefetch_factor: int = 30,
+        persistent_workers: bool = True,
+        pin_memory: bool = True,
+        **kwargs,
+    ):
         """
         Args:
             path: path to dataset
@@ -25,7 +34,11 @@ class Base_DataModule(pl.LightningDataModule):
         self.path = path
         self.batch_size = batch_size
 
-        self.dataloading_kwargs = dataloading_kwargs
+        self.num_workers = num_workers
+        self.prefetch_factor = prefetch_factor
+        self.persistent_workers = persistent_workers
+        self.pin_memory = pin_memory
+
         self.data = {}
 
     def prepare_data(self):
