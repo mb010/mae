@@ -91,6 +91,21 @@ class FITS_DataModule(Base_DataModule):
             ]
         )
 
+        self.eval_transform = A.Compose(
+            [
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                    ),
+                    p=1,
+                ),
+                A.CenterCrop(self.img_size, self.img_size),
+            ]
+        )
+
     def setup(self, stage=None):
         self.data["train"] = [
             (
@@ -133,7 +148,7 @@ class FITS_DataModule(Base_DataModule):
                 "data": MiraBest_FITS(
                     root=self.MiraBest_FITS_root,
                     train=True,
-                    transform=self.train_transform,
+                    transform=self.eval_transform,
                 ),
                 # "data": STL10(root=self.path, split="train", transform=test_transform),
             },
