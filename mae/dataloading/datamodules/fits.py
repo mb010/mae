@@ -58,9 +58,7 @@ class FITS_DataModule(Base_DataModule):
         self.batch_size = batch_size
         self.img_size = img_size
         self.MiraBest_FITS_root = MiraBest_FITS_root
-
-    def train_transform(self):
-        transform = A.Compose(
+        self.train_transform = A.Compose(
             [
                 A.Lambda(
                     name="UVAugmentation",
@@ -77,10 +75,8 @@ class FITS_DataModule(Base_DataModule):
                 ),
             ]
         )
-        return transform
 
-    def test_transform(self):
-        transform = A.Compose(
+        self.test_transform = A.Compose(
             [
                 A.Lambda(
                     name="UVAugmentation",
@@ -93,7 +89,6 @@ class FITS_DataModule(Base_DataModule):
                 ),
             ]
         )
-        return transform
 
     def setup(self, stage=None):
         self.data["train"] = [
@@ -104,6 +99,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="train",
                     transform=self.train_transform,
+                    aug_type="albumentations",
                 ),
             )
         ]
@@ -115,6 +111,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="val",
                     transform=self.test_transform,
+                    aug_type="albumentations",
                 ),
             )
         ]
@@ -126,6 +123,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="test",
                     transform=self.test_transform,
+                    aug_type="albumentations",
                 ),
             )
         ]
@@ -138,6 +136,7 @@ class FITS_DataModule(Base_DataModule):
                     root=self.MiraBest_FITS_root,
                     train=True,
                     transform=self.train_transform,
+                    aug_type="albumentations",
                 ),
                 # "data": STL10(root=self.path, split="train", transform=test_transform),
             },
