@@ -28,8 +28,7 @@ class FITS_DataModule(Base_DataModule):
     Args:
         path (str): Path to data folder.
         batch_size (int): Batch size for dataloaders.
-        dataloading_kwargs (dict): Keyword arguments to pass to dataloaders.
-        **kwargs: Additional keyword arguments to pass to dataloaders.
+        and more (TODO)
     """
 
     def __init__(
@@ -103,7 +102,6 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="train",
                     transform=self.train_transform,
-                    **self.dataloading_kwargs,
                 ),
             )
         ]
@@ -115,7 +113,6 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="val",
                     transform=self.test_transform,
-                    **self.dataloading_kwargs,
                 ),
             )
         ]
@@ -127,7 +124,6 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="test",
                     transform=self.test_transform,
-                    **self.dataloading_kwargs,
                 ),
             )
         ]
