@@ -40,7 +40,8 @@ class FITS_DataModule(Base_DataModule):
         persistent_workers: bool = False,
         pin_memory: bool = True,
         img_size: bool = 128,
-        **kwargs
+        MiraBest_FITS_root: str = "/share/nas2_5/mbowles/_data/MiraBest_FITS",
+        **kwargs,
     ):
         super().__init__(
             path,
@@ -56,6 +57,7 @@ class FITS_DataModule(Base_DataModule):
         self.sig = (0.229, 0.224, 0.225)
         self.batch_size = batch_size
         self.img_size = img_size
+        self.MiraBest_FITS_root = MiraBest_FITS_root
 
     def train_transform(self):
         transform = A.Compose(
@@ -132,7 +134,11 @@ class FITS_DataModule(Base_DataModule):
             {
                 "name": "MiraBest_FIRST_train",
                 "n_classes": 2,
-                "data": MiraBest_FITS(root=str(self.path), train=True, transform=self.train_transform),
+                "data": MiraBest_FITS(
+                    root=self.MiraBest_FITS_root,
+                    train=True,
+                    transform=self.train_transform,
+                ),
                 # "data": STL10(root=self.path, split="train", transform=test_transform),
             },
         ]
