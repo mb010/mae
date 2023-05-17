@@ -38,8 +38,8 @@ class FITS_DataModule(Base_DataModule):
         self.mu = (0.485, 0.456, 0.406)
         self.sig = (0.229, 0.224, 0.225)
         self.batch_size = batch_size
-        self.img_size = dataloading_kwargs["img_size"]
-        self.data_type = dataloading_kwargs["data_type"]
+        print(dataloading_kwargs)
+        self.img_size = kwargs["img_size"]
         self.dataloading_kwargs = dataloading_kwargs
 
     def train_transform(self):
@@ -83,7 +83,11 @@ class FITS_DataModule(Base_DataModule):
             (
                 "FIRST_train",
                 FitsDataset(
-                    self.path, stage="train", transform=self.train_transform, **self.dataloading_kwargs
+                    self.path,
+                    crop_size=self.img_size,
+                    stage="train",
+                    transform=self.train_transform,
+                    **self.dataloading_kwargs
                 ),
             )
         ]
@@ -91,7 +95,11 @@ class FITS_DataModule(Base_DataModule):
             (
                 "FIRST_val",
                 FitsDataset(
-                    self.path, stage="val", transform=self.test_transform, **self.dataloading_kwargs
+                    self.path,
+                    crop_size=self.img_size,
+                    stage="val",
+                    transform=self.test_transform,
+                    **self.dataloading_kwargs
                 ),
             )
         ]
@@ -99,7 +107,11 @@ class FITS_DataModule(Base_DataModule):
             (
                 "FIRST_test",
                 FitsDataset(
-                    self.path, stage="test", transform=self.test_transform, **self.dataloading_kwargs
+                    self.path,
+                    crop_size=self.img_size,
+                    stage="test",
+                    transform=self.test_transform,
+                    **self.dataloading_kwargs
                 ),
             )
         ]

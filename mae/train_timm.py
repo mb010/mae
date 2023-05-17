@@ -126,6 +126,7 @@ def main():
         paths[config["dataset"]],
         batch_size=config["data"]["batch_size"],
         dataloading_kwargs=config["dataloading"],
+        img_size=config["data"]["img_size"],
     )
 
     ## Run pretraining ##
