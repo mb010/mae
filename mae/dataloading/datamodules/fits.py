@@ -43,7 +43,15 @@ class FITS_DataModule(Base_DataModule):
         img_size: bool = 128,
         **kwargs
     ):
-        super().__init__(path, batch_size, dataloading_kwargs)
+        super().__init__(
+            path,
+            batch_size,
+            num_workers,
+            prefetch_factor,
+            persistent_workers,
+            pin_memory,
+            **kwargs,
+        )
         # Standard imagenet normalization
         self.mu = (0.485, 0.456, 0.406)
         self.sig = (0.229, 0.224, 0.225)
