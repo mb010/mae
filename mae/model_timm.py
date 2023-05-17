@@ -8,8 +8,8 @@ import pytorch_lightning as pl
 from einops import repeat
 from torch import nn
 
-from .evaluation import Lightning_Eval
-from .utils import CosineLinearWarmupScheduler
+from mae.evaluation import Lightning_Eval
+from mae.utils import CosineLinearWarmupScheduler
 
 
 # class MAE(pl.LightningModule):
