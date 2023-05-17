@@ -32,7 +32,17 @@ class FITS_DataModule(Base_DataModule):
         **kwargs: Additional keyword arguments to pass to dataloaders.
     """
 
-    def __init__(self, path, batch_size: int, dataloading_kwargs: Dict, **kwargs):
+    def __init__(
+        self,
+        path,
+        batch_size: int,
+        num_workers: int = 1,
+        prefetch_factor: int = 8,
+        persistent_workers: bool = False,
+        pin_memory: bool = True,
+        img_size: bool = 128,
+        **kwargs
+    ):
         super().__init__(path, batch_size, dataloading_kwargs)
         # Standard imagenet normalization
         self.mu = (0.485, 0.456, 0.406)
@@ -87,7 +97,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="train",
                     transform=self.train_transform,
-                    **self.dataloading_kwargs
+                    **self.dataloading_kwargs,
                 ),
             )
         ]
@@ -99,7 +109,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="val",
                     transform=self.test_transform,
-                    **self.dataloading_kwargs
+                    **self.dataloading_kwargs,
                 ),
             )
         ]
@@ -111,7 +121,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="test",
                     transform=self.test_transform,
-                    **self.dataloading_kwargs
+                    **self.dataloading_kwargs,
                 ),
             )
         ]
