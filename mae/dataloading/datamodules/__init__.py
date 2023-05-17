@@ -1,6 +1,6 @@
 from .vision import *
 from .rgz import *
-from .fits import FITS_DataModule
+from .fits import FIRST_DataModule
 
 datasets = {
     "stl10": STL10_DataModule,
