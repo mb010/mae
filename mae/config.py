@@ -35,3 +35,55 @@ def load_config():
     config.update(dataset_config)
 
     return config
+
+
+def update_config(config):
+    """
+    Update config using presets
+    """
+    # Encoder presets
+    if config["architecture"]["encoder"]["preset"].lower() == "none":
+        pass
+
+    elif config["architecture"]["encoder"]["preset"] == "vit_small":
+        config["architecture"]["encoder"]["embed_dim"] = 384
+        config["architecture"]["encoder"]["depth"] = 12
+        config["architecture"]["encoder"]["heads"] = 6
+        config["architecture"]["encoder"]["mlp_ratio"] = 4
+
+    elif config["architecture"]["encoder"]["preset"] == "vit_base":
+        config["architecture"]["encoder"]["embed_dim"] = 768
+        config["architecture"]["encoder"]["depth"] = 12
+        config["architecture"]["encoder"]["heads"] = 12
+        config["architecture"]["encoder"]["mlp_ratio"] = 4
+
+    elif config["architecture"]["encoder"]["preset"] == "vit_large":
+        config["architecture"]["encoder"]["embed_dim"] = 1024
+        config["architecture"]["encoder"]["depth"] = 24
+        config["architecture"]["encoder"]["heads"] = 16
+        config["architecture"]["encoder"]["mlp_ratio"] = 4
+
+    elif config["architecture"]["encoder"]["preset"] == "vit_huge":
+        config["architecture"]["encoder"]["embed_dim"] = 1280
+        config["architecture"]["encoder"]["depth"] = 32
+        config["architecture"]["encoder"]["heads"] = 16
+        config["architecture"]["encoder"]["mlp_ratio"] = 4
+
+    else:
+        raise ValueError(f"unknown preset: {config['architecture']['encoder']['preset']}")
+
+    # Decoder presets
+    if config["architecture"]["decoder"]["preset"].lower() == "none":
+        pass
+
+    elif config["architecture"]["decoder"]["preset"] == "default":
+        config["architecture"]["decoder"]["embed_dim"] = 512
+        config["architecture"]["decoder"]["depth"] = 8
+        config["architecture"]["decoder"]["heads"] = 16
+        config["architecture"]["decoder"]["mlp_ratio"] = 4
+
+    elif config["architecture"]["decoder"]["preset"] == "small":
+        config["architecture"]["decoder"]["embed_dim"] = 256
+        config["architecture"]["decoder"]["depth"] = 4
+        config["architecture"]["decoder"]["heads"] = 8
+        config["architecture"]["decoder"]["mlp_ratio"] = 4

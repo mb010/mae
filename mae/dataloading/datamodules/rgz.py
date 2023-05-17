@@ -12,6 +12,7 @@ else:
 from PIL import Image
 from torchvision.datasets.utils import download_url, check_integrity
 from torch.utils.data import DataLoader
+from typing import Dict
 
 from mae.dataloading.datamodules.vision import Base_DataModule
 from mae.dataloading.utils import rgz_cut
@@ -19,8 +20,9 @@ from astroaugmentations.datasets.MiraBest_F import MBFRFull, MBFRConfident, MBFR
 
 
 class RGZ_DataModule(Base_DataModule):
-    def __init__(self, config):
-        super().__init__(config, mu=(0.008008896,), sig=(0.05303395,))
+    def __init__(self, path, batch_size: int, dataloading_kwargs: Dict):
+        super().__init__(path, batch_size, dataloading_kwargs)
+        self.mu, self.sigma = (0.008008896,), (0.05303395,)
 
     def prepare_data(self):
         MBFRFull(self.path, train=False, download=True)
@@ -35,10 +37,26 @@ class RGZ_DataModule(Base_DataModule):
         # self.update_transforms(d_train)
 
         # Re-initialise dataset with new mu and sig values
-        d_rgz = RGZ108k(self.path, train=True, transform=self.T_train)
-        d_rgz = rgz_cut(d_rgz, self.config["data"]["cut_threshold"], mb_cut=True, remove_duplicates=True)
+        d_rgz = RGZ108k(
+            self.path,
+            train=True,
+            transform=self.T_train,
+            cut_threshold=20,
+            mb_cut=True,
+            remove_duplicates=True,
+        )
+
+        # TODO add transforms
+        train_transform = T.Compose(
+            [
+                T.ToTensor(),
+                T.Normalize(self.mu, self.sig),
+            ]
+        )
+
         self.data["train"] = d_rgz
 
+        # TODO Replace this weird dictionary stuff
         # List of (name, train_dataset) tuples to evaluate linear layer
         data_dict = {
             "root": self.path,
@@ -66,8 +84,6 @@ class RGZ_DataModule(Base_DataModule):
                 "data": MBFRConfident(**data_dict, train=True),
             }
         ]
-
-
 
 
 class RGZ108k(D.Dataset):
@@ -157,11 +173,24 @@ class RGZ108k(D.Dataset):
         "md5": "d5d3d04e1d462b02b69285af3391ba25",
     }
 
-    def __init__(self, root, train=True, transform=None, target_transform=None, download=False):
+    def __init__(
+        self,
+        root,
+        train=True,
+        transform=None,
+        target_transform=None,
+        download=False,
+        remove_duplicates: bool = True,
+        cut_threshold: float = 0.0,
+        mb_cut=False,
+    ):
         self.root = os.path.expanduser(root)
         self.transform = transform
         self.target_transform = target_transform
         self.train = train  # training set or test set
+        self.remove_duplicates = remove_duplicates
+        self.cut_threshold = cut_threshold
+        self.mb_cut = mb_cut
 
         # if download:
         #     self.download()
@@ -209,6 +238,36 @@ class RGZ108k(D.Dataset):
         self.data = self.data.transpose((0, 2, 3, 1))
 
         self._load_meta()
+
+        # Make cuts on the data
+        n = self.__len__()
+        idx_bool = np.ones(n, dtype=bool)
+
+        if self.remove_duplicates:
+            idx_bool = np.zeros(n, dtype=bool)
+            _, idx_unique = np.unique(self.data, axis=0, return_index=True)
+            idx_bool[idx_unique] = True
+
+            print(f"Removed {n - np.count_nonzero(idx_bool)} duplicate samples")
+            n = np.count_nonzero(idx_bool)
+
+        idx_bool *= self.sizes > self.cut_threshold
+        print(f"Removing {n - np.count_nonzero(idx_bool)} samples below angular size threshold.")
+        n = np.count_nonzero(idx_bool)
+
+        if mb_cut:
+            idx_bool *= self.mbflg == 0
+
+            # Print number of MB samples removed
+            print(f"Removed {n - np.count_nonzero(idx_bool)} MiraBest samples from RGZ")
+
+        idx = np.argwhere(idx_bool)
+
+        self.data = self.data[idx, ...]
+        self.names = self.names[idx, ...]
+        self.rgzid = self.rgzid[idx, ...]
+        self.mbflg = self.mbflg[idx, ...]
+        self.sizes = self.sizes[idx, ...]
 
     def _load_meta(self):
         path = os.path.join(self.root, self.base_folder, self.meta["filename"])
