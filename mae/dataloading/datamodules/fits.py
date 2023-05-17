@@ -19,6 +19,7 @@ from mae.dataloading.datamodules.vision import Base_DataModule
 from astroaugmentations.datasets.MiraBest_F import MBFRFull, MBFRConfident, MBFRUncertain, MiraBest_FITS
 from astroaugmentations.datasets.fits import FitsDataset
 import astroaugmentations as AA
+import albumentations as A
 import torch.fft as fft
 
 
