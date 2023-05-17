@@ -56,9 +56,7 @@ class FITS_DataModule(Base_DataModule):
         self.mu = (0.485, 0.456, 0.406)
         self.sig = (0.229, 0.224, 0.225)
         self.batch_size = batch_size
-        print(dataloading_kwargs)
-        self.img_size = kwargs["img_size"]
-        self.dataloading_kwargs = dataloading_kwargs
+        self.img_size = img_size
 
     def train_transform(self):
         transform = A.Compose(
