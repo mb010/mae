@@ -132,7 +132,7 @@ class FITS_DataModule(Base_DataModule):
             {
                 "name": "MiraBest_FIRST_train",
                 "n_classes": 2,
-                "data": MiraBest_FITS(root=self.path, train=True, transform=self.train_transform),
+                "data": MiraBest_FITS(root=str(self.path), train=True, transform=self.train_transform),
                 # "data": STL10(root=self.path, split="train", transform=test_transform),
             },
         ]
