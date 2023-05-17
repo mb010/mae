@@ -82,6 +82,7 @@ class STL10_DataModule(Base_DataModule):
                 T.RandomResizedCrop(96, scale=(0.2, 1.0), antialias=True),
             ]
         )
+
         test_transform = T.Compose([T.ToTensor(), T.Normalize(self.mu, self.sig)])
 
         self.data["train"] = STL10(root=self.path, split="train+unlabeled", transform=train_transform)
