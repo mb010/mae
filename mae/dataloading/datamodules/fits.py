@@ -127,3 +127,13 @@ class FITS_DataModule(Base_DataModule):
                 ),
             )
         ]
+        # List of (name, train_dataset) tuples to train linear evaluation layer
+        train = True if split == "train" else False
+        self.data["eval_train"] = [
+            {
+                "name": "MiraBest_FIRST_train",
+                "n_classes": 2,
+                "data": MiraBest_FITS(root=self.path, train=train, transform=transform),
+                # "data": STL10(root=self.path, split="train", transform=test_transform),
+            },
+        ]
