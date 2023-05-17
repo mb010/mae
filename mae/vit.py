@@ -109,6 +109,8 @@ class ViT_Encoder(timm.models.vision_transformer.VisionTransformer):
 
             self.pos_embed.data.copy_(torch.from_numpy(pos_embed).float().unsqueeze(0))
 
+            self.finetuning_layers = self.blocks
+
     def forward(self, x, reduce=True):
         """
         Args:
