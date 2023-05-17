@@ -125,10 +125,10 @@ def main():
     datamodule = datasets[config["dataset"]](
         paths[config["dataset"]],
         batch_size=config["data"]["batch_size"],
-        num_workers=config["data"]["num_workers"],
-        prefetch_factor=config["data"]["prefetch_factor"],
-        persistent_workers=config["data"]["persistent_workers"],
-        pin_memory=config["data"]["pin_memory"],
+        num_workers=config["dataloading"]["num_workers"],
+        prefetch_factor=config["dataloading"]["prefetch_factor"],
+        persistent_workers=config["dataloading"]["persistent_workers"],
+        pin_memory=config["dataloading"]["pin_memory"],
         img_size=config["data"]["img_size"],
     )
 
