@@ -88,6 +88,7 @@ class FITS_DataModule(Base_DataModule):
                         rfi_mag=1,
                         rfi_prob=0.01,  # RFI injection
                         fft=True,
+                        out=[np.real, np.imag, np.angle],
                     ),
                     p=1,
                 ),
@@ -104,6 +105,7 @@ class FITS_DataModule(Base_DataModule):
                         noise_p=0.0,  # Noise Injection
                         rfi_p=0.0,  # RFI injection
                         fft=True,
+                        out=[np.real, np.imag, np.angle],
                     ),
                     p=1,
                 ),
@@ -120,6 +122,7 @@ class FITS_DataModule(Base_DataModule):
                         noise_p=0.0,  # Noise Injection
                         rfi_p=0.0,  # RFI injection
                         fft=True,
+                        out=[np.real, np.imag, np.angle],
                     ),
                     p=1,
                 ),
