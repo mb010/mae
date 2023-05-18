@@ -136,6 +136,7 @@ class FITS_DataModule(Base_DataModule):
                     stage="train",
                     transform=self.train_transform,
                     data_type=self.data_type,
+                    aug_type="albumentations",
                 ),
             )
         ]
@@ -148,6 +149,7 @@ class FITS_DataModule(Base_DataModule):
                     stage="val",
                     transform=self.test_transform,
                     data_type=self.data_type,
+                    aug_type="albumentations",
                 ),
             )
         ]
