@@ -64,6 +64,7 @@ class FITS_DataModule(Base_DataModule):
         self.MiraBest_FITS_root = MiraBest_FITS_root
         self.train_transform = A.Compose(
             [
+                A.CenterCrop(self.img_size, self.img_size),
                 A.Lambda(
                     name="UVAugmentation",
                     image=AA.image_domain.radio.UVAugmentation(
@@ -78,11 +79,17 @@ class FITS_DataModule(Base_DataModule):
                     ),
                     p=1,
                 ),
+                A.Lambda(
+                    name="Change dtype",
+                    image=lambda x: torch.from_numpy(x).to(self.data_type),
+                    p=1,
+                ),
             ]
         )
 
         self.test_transform = A.Compose(
             [
+                A.CenterCrop(self.img_size, self.img_size),
                 A.Lambda(
                     name="UVAugmentation",
                     image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
@@ -91,6 +98,11 @@ class FITS_DataModule(Base_DataModule):
                         rfi_p=0.0,  # RFI injection
                         fft=True,
                     ),
+                    p=1,
+                ),
+                A.Lambda(
+                    name="Change dtype",
+                    image=lambda x: torch.from_numpy(x).to(self.data_type),
                     p=1,
                 ),
             ]
@@ -98,6 +110,7 @@ class FITS_DataModule(Base_DataModule):
 
         self.eval_transform = A.Compose(
             [
+                A.CenterCrop(self.img_size, self.img_size),
                 A.Lambda(
                     name="UVAugmentation",
                     image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
@@ -108,7 +121,11 @@ class FITS_DataModule(Base_DataModule):
                     ),
                     p=1,
                 ),
-                A.CenterCrop(self.img_size, self.img_size),
+                A.Lambda(
+                    name="Change dtype",
+                    image=lambda x: torch.from_numpy(x).to(self.data_type),
+                    p=1,
+                ),
             ]
         )
 
