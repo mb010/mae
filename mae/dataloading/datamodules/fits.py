@@ -79,11 +79,6 @@ class FITS_DataModule(Base_DataModule):
                     ),
                     p=1,
                 ),
-                A.Lambda(
-                    name="Change dtype",
-                    image=lambda x: torch.from_numpy(x).to(self.data_type),
-                    p=1,
-                ),
             ]
         )
 
@@ -100,11 +95,6 @@ class FITS_DataModule(Base_DataModule):
                     ),
                     p=1,
                 ),
-                A.Lambda(
-                    name="Change dtype",
-                    image=lambda x: torch.from_numpy(x).to(self.data_type),
-                    p=1,
-                ),
             ]
         )
 
@@ -119,11 +109,6 @@ class FITS_DataModule(Base_DataModule):
                         rfi_p=0.0,  # RFI injection
                         fft=True,
                     ),
-                    p=1,
-                ),
-                A.Lambda(
-                    name="Change dtype",
-                    image=lambda x: torch.from_numpy(x).to(self.data_type),
                     p=1,
                 ),
             ]
@@ -175,7 +160,7 @@ class FITS_DataModule(Base_DataModule):
                     root=self.MiraBest_FITS_root,
                     train=True,
                     transform=self.eval_transform,
+                    data_type=self.data_type,
                 ),
-                # "data": STL10(root=self.path, split="train", transform=test_transform),
             },
         ]
