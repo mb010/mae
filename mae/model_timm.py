@@ -12,8 +12,7 @@ from evaluation import Lightning_Eval
 from utils import CosineLinearWarmupScheduler
 
 
-# class MAE(pl.LightningModule):
-class MAE(Lightning_Eval):
+class MAE(pl.LightningModule):
     def __init__(
         self,
         encoder,
