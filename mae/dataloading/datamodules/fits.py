@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Union
 import torch.utils.data as D
 import torch
 import numpy as np
