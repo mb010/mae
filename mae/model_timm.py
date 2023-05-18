@@ -156,7 +156,7 @@ class MAE(pl.LightningModule):
         c = imgs.shape[1]
         x = imgs.reshape(shape=(imgs.shape[0], c, h, p, w, p))
         x = torch.einsum("nchpwq->nhwpqc", x)
-        x = x.reshape(shape=(imgs.shape[0], h * w, p**2 * 3))
+        x = x.reshape(shape=(imgs.shape[0], h * w, p**2 * c))
         return x
 
     # def unpatchify(self, x):
