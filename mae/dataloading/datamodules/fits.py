@@ -127,19 +127,14 @@ class FITS_DataModule(Base_DataModule):
         )
 
     def setup(self, stage=None):
-        self.data["train"] = [
-            (
-                "FIRST_train",
-                FitsDataset(
-                    self.path,
-                    crop_size=self.img_size,
-                    stage="train",
-                    transform=self.train_transform,
-                    data_type=self.data_type,
-                    aug_type="albumentations",
-                ),
-            )
-        ]
+        self.data["train"] = FitsDataset(
+            self.path,
+            crop_size=self.img_size,
+            stage="train",
+            transform=self.train_transform,
+            data_type=self.data_type,
+            aug_type="albumentations",
+        )
         self.data["val"] = [
             (
                 "FIRST_val",
