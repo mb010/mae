@@ -74,6 +74,7 @@ class FITS_DataModule(Base_DataModule):
                         rfi_p=0.5,
                         rfi_mag=1,
                         rfi_prob=0.01,  # RFI injection
+                        fft=True,
                     ),
                     p=1,
                 ),
@@ -88,6 +89,7 @@ class FITS_DataModule(Base_DataModule):
                         dropout_p=0.0,  # RFI Overflagging
                         noise_p=0.0,  # Noise Injection
                         rfi_p=0.0,  # RFI injection
+                        fft=True,
                     ),
                     p=1,
                 ),
@@ -102,6 +104,7 @@ class FITS_DataModule(Base_DataModule):
                         dropout_p=0.0,  # RFI Overflagging
                         noise_p=0.0,  # Noise Injection
                         rfi_p=0.0,  # RFI injection
+                        fft=True,
                     ),
                     p=1,
                 ),
