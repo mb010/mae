@@ -42,6 +42,7 @@ class FITS_DataModule(Base_DataModule):
         pin_memory: bool = True,
         img_size: bool = 128,
         MiraBest_FITS_root: str = "/share/nas2_5/mbowles/_data/MiraBest_FITS",
+        data_type: Union[str, type] = data_type,
         **kwargs,
     ):
         super().__init__(
@@ -58,6 +59,7 @@ class FITS_DataModule(Base_DataModule):
         self.sig = (0.229, 0.224, 0.225)
         self.batch_size = batch_size
         self.img_size = img_size
+        self.data_type = data_type
         self.MiraBest_FITS_root = MiraBest_FITS_root
         self.train_transform = A.Compose(
             [
@@ -115,6 +117,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="train",
                     transform=self.train_transform,
+                    data_type=self.data_type,
                 ),
             )
         ]
@@ -126,6 +129,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="val",
                     transform=self.test_transform,
+                    data_type=self.data_type,
                 ),
             )
         ]
@@ -137,6 +141,7 @@ class FITS_DataModule(Base_DataModule):
                     crop_size=self.img_size,
                     stage="test",
                     transform=self.test_transform,
+                    data_type=self.data_type,
                 ),
             )
         ]

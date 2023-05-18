@@ -96,6 +96,7 @@ def main():
         level=logging.INFO,
         format="%(asctime)s %(levelname)s: %(message)s",
     )
+    torch.set_float32_matmul_precision("high")
 
     ## Load up config from yml files ##
     config = load_config()
@@ -130,6 +131,7 @@ def main():
         persistent_workers=config["dataloading"]["persistent_workers"],
         pin_memory=config["dataloading"]["pin_memory"],
         img_size=config["data"]["img_size"],
+        data_type=config["trainer"]["precision"],
     )
 
     ## Run pretraining ##
