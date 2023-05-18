@@ -60,7 +60,19 @@ class FITS_DataModule(Base_DataModule):
         self.sig = (0.229, 0.224, 0.225)
         self.batch_size = batch_size
         self.img_size = img_size
-        self.data_type = data_type
+        self.data_type = {
+            "16-mixed": torch.bfloat16,
+            "bf16-mixed": torch.bfloat16,
+            "32-true": torch.float32,
+            "64-true": torch.float64,
+            64: torch.float64,
+            32: torch.float32,
+            16: torch.float16,
+            "64": torch.float64,
+            "32": torch.float32,
+            "16": torch.float16,
+            "bf16": torch.bfloat16,
+        }[data_type]
         self.MiraBest_FITS_root = MiraBest_FITS_root
         self.train_transform = A.Compose(
             [
