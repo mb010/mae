@@ -1,5 +1,6 @@
 from typing import Dict
 import torch.utils.data as D
+import torch
 import numpy as np
 import os
 import sys
@@ -42,7 +43,7 @@ class FITS_DataModule(Base_DataModule):
         pin_memory: bool = True,
         img_size: bool = 128,
         MiraBest_FITS_root: str = "/share/nas2_5/mbowles/_data/MiraBest_FITS",
-        data_type: Union[str, type] = data_type,
+        data_type: Union[str, type] = torch.float32,
         **kwargs,
     ):
         super().__init__(
