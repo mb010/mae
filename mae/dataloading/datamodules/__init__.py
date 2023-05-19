@@ -7,4 +7,5 @@ datasets = {
     # "imagenette": Imagenette_DataModule,
     "rgz": RGZ_DataModule,
     "fits": FITS_DataModule,
+    "fits_rgz": FITS_DataModule,
 }

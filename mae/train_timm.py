@@ -139,7 +139,7 @@ def main():
 
     config["run_id"] = str(wandb.run.id)
 
-    paths = Path_Handler()._dict()
+    paths = Path_Handler(data=config["data"]["data_path"])._dict()
 
     wandb_logger = pl.loggers.WandbLogger(
         project=config["project_name"],
@@ -165,6 +165,7 @@ def main():
         pin_memory=config["dataloading"]["pin_memory"],
         img_size=config["data"]["img_size"],
         data_type=config["trainer"]["precision"],
+        astro
     )
 
     ## Run pretraining ##
