@@ -132,9 +132,9 @@ def init_argparse():
         usage="%(prog)s [OPTION] [CONFIG_NAME]...",
         description="Train MAE according to config as determined by CONFIG_NAME file.",
     )
-    parser.add_argument("-C", "--config", default="global.yml", required=False, help="Config file name.")
-    parser.add_argument("-D", "--dataconfig", default=None, required=False, help="Data config name.")
-    args, __ = parser.parse_known_args()
+    parser.add_argument("config", default="global.yml", required=False, help="Config file name.")
+    parser.add_argument("dataconfig", default=None, required=False, help="Data config name.")
+    args = parser.parse_known_args()
 
     return vars(args)
 
@@ -144,8 +144,7 @@ def main():
         level=logging.INFO,
         format="%(asctime)s %(levelname)s: %(message)s",
     )
-    parser = init_argparse()
-    args = parser.parse_args()
+    args = init_argparse()
 
     torch.set_float32_matmul_precision("high")
 
