@@ -2,7 +2,7 @@ import wandb
 import pytorch_lightning as pl
 import logging
 import torch
-
+import argparse
 
 from config import load_config
 from dataloading.datamodules import datasets
@@ -124,15 +124,33 @@ def run_pretraining(config, paths, datamodule, experiment_dir, wandb_logger):
     return pretrain_checkpoint, model
 
 
+def init_argparse():
+    """
+    Parse the config from the command line arguments
+    """
+    parser = argparse.ArgumentParser(
+        usage="%(prog)s [OPTION] [CONFIG_NAME]...",
+        description="Train MAE according to config as determined by CONFIG_NAME file.",
+    )
+    parser.add_argument("-C", "--config", default="global.yml", required=False, help="Config file name.")
+    parser.add_argument("-D", "--dataconfig", default=None, required=False, help="Data config name.")
+    args, __ = parser.parse_known_args()
+
+    return vars(args)
+
+
 def main():
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s: %(message)s",
     )
+    parser = init_argparse()
+    args = parser.parse_args()
+
     torch.set_float32_matmul_precision("high")
 
     ## Load up config from yml files ##
-    config = load_config()
+    config = load_config(str(args.config), str(args.dataconfig))
     # Merges both configs together. Indexes second config based on the 'project_name' parameter.
 
     wandb.init(project=config["project_name"], config=config)
