@@ -13,6 +13,7 @@ class Path_Handler:
         )  # i.e. this repo
 
         path_dict["data"] = kwargs.get("data", path_dict["root"] / "_data")
+        path_dict["data"] = kwargs.get("data", path_dict["root"] / "_data" / "weights")
 
         path_dict["files"] = kwargs.get("files", path_dict["project"] / "files")
         path_dict["main"] = kwargs.get("main", path_dict["project"] / "mae")
