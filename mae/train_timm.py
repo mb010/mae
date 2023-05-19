@@ -165,7 +165,10 @@ def main():
         pin_memory=config["dataloading"]["pin_memory"],
         img_size=config["data"]["img_size"],
         data_type=config["trainer"]["precision"],
-        astro
+        astroaugment=config["data"]["astroaugment"],
+        fft=config["data"]["fft"],
+        nchan=config["data"]["in_chans"],
+        png=config["data"]["png"],
     )
 
     ## Run pretraining ##
