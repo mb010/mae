@@ -38,11 +38,15 @@ fi
 EXPERIMENT="${options[$index]}"
 
 # Move data to scratch for faster loading
-echo ">>> Copying data to /state/partition1/fmae_data"
-mkdir -p /state/partition1/fmae_data
-rsync -urltv /share/nas2_5/mbowles/_data/FIRST /state/partition1/fmae_data/
-rsync -urltv /share/nas2_5/mbowles/_data/MiraBest_FITS /state/partition1/fmae_data/
-rsync -urltv /share/nas2_5/mbowles/_data/rgz_fits /state/partition1/fmae_data/
+if [ -d /state/partition1/fmae_data ]; then
+    echo "/state/partition1/fmae_data already exists."
+else
+    echo "Copying data to /state/partition1/fmae_data"
+    mkdir /state/partition1/fmae_data
+    cp -r /share/nas2_5/mbowles/_data/FIRST /state/partition1/fmae_data/
+    cp -r /share/nas2_5/mbowles/_data/MiraBest_FITS /state/partition1/fmae_data/
+    cp -r /share/nas2_5/mbowles/_data/rgz_fits /state/partition1/fmae_data/
+fi
 
 echo ">>> Starting call for: ${GLOBAL} and ${EXPERIMENT_CONFIG}"
 # Source venv and call training
