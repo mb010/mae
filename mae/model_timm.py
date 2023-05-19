@@ -264,7 +264,7 @@ class MAE(pl.LightningModule):
         # scaling_mask = torch.ones_like(loss)
         # scaling_mask[torch.argwhere(masked_patches == min_value)] = 0.2
 
-        self.log("train/loss", loss, on_step=False, on_epoch=True)
+        self.log("train/loss", loss, on_step=True, on_epoch=True, batch_size=batch.shape[0])
         return loss
 
     def configure_optimizers(self):
