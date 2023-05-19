@@ -1,0 +1,18 @@
+project_name: 'F-MAE'
+dataset: 'fits_rgz' # ['fits', 'fits_mb', 'fits_rgz']
+seed: 42
+
+trainer:
+  accelerator: 'gpu' # set to 1 to disable multi gpu training
+  devices: 1
+  num_nodes: 1
+  strategy: 'auto' # set to null to disable multi gpu training
+  fast_dev_run: False # debugging mode
+  precision: '32' # [16, 32, 'bf16'], often overriden
+  deterministic: True
+
+dataloading:
+  num_workers: 17  # often overriden
+  prefetch_factor: 30
+  persistent_workers: False  # torch default is False
+  pin_memory: True
