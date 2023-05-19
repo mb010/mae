@@ -5,7 +5,7 @@ import logging
 import pytorch_lightning as pl
 
 # from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
-from einops import repeat
+from einops import repeat, rearrange
 from torch import nn
 
 from mae.evaluation import Lightning_Eval
@@ -143,20 +143,31 @@ class MAE(pl.LightningModule):
         # Project to pixel values
         pred_pixel_values = self.to_pixels(mask_tokens)
 
+    # def patchify(self, imgs):
+    #     """
+    #     imgs: (N, 3, H, W)
+    #     x: (N, L, patch_size**2 *3)
+    #     """
+    #     p = self.encoder.patch_embed.patch_size[0]
+
+    #     assert imgs.shape[2] == imgs.shape[3] and imgs.shape[2] % p == 0
+
+    #     h = w = imgs.shape[2] // p
+    #     x = imgs.reshape(shape=(imgs.shape[0], 3, h, p, w, p))
+    #     x = torch.einsum("nchpwq->nhwpqc", x)
+    #     x = x.reshape(shape=(imgs.shape[0], h * w, p**2 * 3))
+    #     return x
+
     def patchify(self, imgs):
         """
-        imgs: (N, 3, H, W)
-        x: (N, L, patch_size**2 *3)
+        imgs: (N, C, H, W)
+        x: (N, L, patch_size**2 *C)
         """
         p = self.encoder.patch_embed.patch_size[0]
 
-        assert imgs.shape[2] == imgs.shape[3] and imgs.shape[2] % p == 0
-
-        h = w = imgs.shape[2] // p
-        c = imgs.shape[1]
-        x = imgs.reshape(shape=(imgs.shape[0], c, h, p, w, p))
-        x = torch.einsum("nchpwq->nhwpqc", x)
-        x = x.reshape(shape=(imgs.shape[0], h * w, p**2 * c))
+        # Turn (c x h x w) images into (n_patchs x patch_dim) flattened patches and
+        # project to latent dimension
+        x = rearrange(imgs, "b c (n1 p1) (n2 p2) -> b (n1 n2) (p p c)", p=p)
         return x
 
     # def unpatchify(self, x):
