@@ -97,7 +97,7 @@ class FITS_DataModule(Base_DataModule):
         img = img * 255
         return img.astype(np.uint8).astype(self.data_type)
 
-    def _build_transofms(self):
+    def _build_transforms(self):
         # Handle fft and channel shape conditions
         if self.fft:
             if self.nchan == 3:
