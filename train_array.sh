@@ -51,7 +51,7 @@ fi
 echo ">>> Starting call for: ${GLOBAL} and ${EXPERIMENT_CONFIG}"
 # Source venv and call training
 source /share/nas2_5/mbowles/venv/bin/activate
-python /share/nas2_5/mbowles/mae/mae/train_timm.py \
+python -W ignore /share/nas2_5/mbowles/mae/mae/train_timm.py \
     $GLOBAL \
     $EXPERIMENT_CONFIG
 
