@@ -44,6 +44,10 @@ class FITS_DataModule(Base_DataModule):
         img_size: bool = 128,
         MiraBest_FITS_root: str = "/share/nas2_5/mbowles/_data/MiraBest_FITS",
         data_type: Union[str, type] = torch.float32,
+        astroaugment: bool = True,
+        fft: bool = True,  # TODO
+        png: bool = False,  # TODO
+        nchan: int = 3,  # TODO
         **kwargs,
     ):
         super().__init__(
@@ -58,6 +62,11 @@ class FITS_DataModule(Base_DataModule):
         # Standard imagenet normalization
         self.mu = (0.485, 0.456, 0.406)
         self.sig = (0.229, 0.224, 0.225)
+        # Params
+        self.astroaugment = astroaugment
+        self.fft = fft
+        self.png = png
+        self.nchan = nchan
         self.batch_size = batch_size
         self.img_size = img_size
         self.data_type = {
@@ -74,9 +83,35 @@ class FITS_DataModule(Base_DataModule):
             "bf16": torch.bfloat16,
         }[data_type]
         self.MiraBest_FITS_root = MiraBest_FITS_root
-        self.train_transform = A.Compose(
-            [
-                A.CenterCrop(self.img_size, self.img_size),
+        self.train_transform, self.test_transform, self.eval_transform = self._build_transforms()
+
+    def _repeat_array(self, arr, repetitions):
+        arr = arr[np.newaxis, :]
+        return np.repeat(arr_3d, repetitions, axis=0)
+
+        return repeated_arr
+
+    def _naive_png_norm(img):
+        img = np.where(img >= 0, img, 0)
+        img = img / np.amax(img)
+        img = img * 255
+        return img.astype(np.uint8).astype(self.data_type)
+
+    def _build_transofms(self):
+        # Handle fft and channel shape conditions
+        if self.fft:
+            if self.nchan == 3:
+                out = [np.real, np.imag, np.angle]
+            elif self.nchan == 2:
+                out = [np.real, np.imag]
+        else:
+            out = [np.asarray for i in range(self.nchan)]
+        # Handle astroaugment and fft parameters
+        train_transform = [A.CenterCrop(self.img_size, self.img_size)]
+        test_transform = [A.CenterCrop(self.img_size, self.img_size)]
+        eval_transform = [A.CenterCrop(self.img_size, self.img_size)]
+        if self.astroaugment:
+            train_transform.append(
                 A.Lambda(
                     name="UVAugmentation",
                     image=AA.image_domain.radio.UVAugmentation(
@@ -87,47 +122,45 @@ class FITS_DataModule(Base_DataModule):
                         rfi_p=0.5,
                         rfi_mag=1,
                         rfi_prob=0.01,  # RFI injection
-                        fft=True,
-                        out=[np.real, np.imag, np.angle],
+                        fft=self.fft,
+                        out=out,
                     ),
                     p=1,
-                ),
-            ]
-        )
-
-        self.test_transform = A.Compose(
-            [
-                A.CenterCrop(self.img_size, self.img_size),
+                )
+            )
+            test_transform.append(
                 A.Lambda(
                     name="UVAugmentation",
                     image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
                         dropout_p=0.0,  # RFI Overflagging
                         noise_p=0.0,  # Noise Injection
                         rfi_p=0.0,  # RFI injection
-                        fft=True,
-                        out=[np.real, np.imag, np.angle],
+                        fft=self.fft,
+                        out=out,
                     ),
                     p=1,
-                ),
-            ]
-        )
-
-        self.eval_transform = A.Compose(
-            [
-                A.CenterCrop(self.img_size, self.img_size),
+                )
+            )
+            eval_transform.append(
                 A.Lambda(
                     name="UVAugmentation",
                     image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
                         dropout_p=0.0,  # RFI Overflagging
                         noise_p=0.0,  # Noise Injection
                         rfi_p=0.0,  # RFI injection
-                        fft=True,
-                        out=[np.real, np.imag, np.angle],
+                        fft=self.fft,
+                        out=out,
                     ),
                     p=1,
-                ),
-            ]
-        )
+                )
+            )
+        # Handle png parameter
+        if self.png:
+            train_transform.append(A.Lambda(name="png_norm", image=self._naive_png_norm, p=1))
+            test_transform.append(A.Lambda(name="png_norm", image=self._naive_png_norm, p=1))
+            eval_transform.append(A.Lambda(name="png_norm", image=self._naive_png_norm, p=1))
+
+        return A.Compose(train_transform), A.Compose(test_transform), A.Compose(eval_transform)
 
     def setup(self, stage=None):
         self.data["train"] = FitsDataset(

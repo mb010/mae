@@ -31,6 +31,11 @@ data:
     classes: 10 
     # test_size: 0.3 
     batch_size: 128
+    data_path: '/state/partition1/fmae_data'
+    astroaugment: True
+    fft: True
+    png: False
+
 
 linear:
     n_epochs: 10 # Start small. Scale up.
