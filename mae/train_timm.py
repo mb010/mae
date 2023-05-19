@@ -8,6 +8,7 @@ from mae.config import load_config, update_config
 from dataloading.datamodules import datasets
 from paths import Path_Handler, create_path
 from pytorch_lightning.callbacks import LearningRateMonitor
+from utils import interpolate_pos_embed
 
 from finetune.main import run_finetuning
 from finetune.dataloading import finetune_datasets
@@ -15,7 +16,7 @@ from model_timm import MAE
 from mae.vit import ViT_Encoder, Transformer
 
 
-def run_pretraining(config, datamodule, experiment_dir, wandb_logger):
+def run_pretraining(config, paths, datamodule, experiment_dir, wandb_logger):
     pl.seed_everything(config["seed"])
 
     # Save model for test evaluation
@@ -70,6 +71,38 @@ def run_pretraining(config, datamodule, experiment_dir, wandb_logger):
         num_heads=config["architecture"]["encoder"]["num_heads"],
         mlp_ratio=config["architecture"]["encoder"]["mlp_ratio"],
     )
+
+    if config["architecture"]["encoder"]["pretrained"]:
+        checkpoint = torch.load(
+            paths["weights"] / f"mae_{config['architecture']['encoder']['preset']}.pth"
+        )
+        checkpoint_model = checkpoint["model"] if "model" in checkpoint else checkpoint
+        state_dict = encoder.state_dict()
+
+        for k in ["head.weight", "head.bias"]:
+            if k in checkpoint_model and checkpoint_model[k].shape != state_dict[k].shape:
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
+
+        interpolate_pos_embed(encoder, checkpoint_model)
+
+        # interpolate patch_embed
+        new_size = encoder.patch_embed.proj.weight.shape[-1]
+        orig_size = checkpoint_model["patch_embed.proj.weight"].shape[-1]
+        if new_size != orig_size:
+            print(
+                "patch_embed.proj interpolate from %dx%d to %dx%d"
+                % (orig_size, orig_size, new_size, new_size)
+            )
+            patch_embed_weight = torch.nn.functional.interpolate(
+                checkpoint_model["patch_embed.proj.weight"],
+                size=(new_size, new_size),
+                mode="bicubic",
+                align_corners=False,
+            )
+            checkpoint_model["patch_embed.proj.weight"] = patch_embed_weight
+
+        encoder.load_state_dict(checkpoint_model, strict=False)
 
     decoder = Transformer(
         embed_dim=config["architecture"]["decoder"]["embed_dim"],
@@ -132,7 +165,7 @@ def main():
     )
 
     ## Run pretraining ##
-    pretrain_checkpoint, model = run_pretraining(config, datamodule, experiment_dir, wandb_logger)
+    pretrain_checkpoint, model = run_pretraining(config, paths, datamodule, experiment_dir, wandb_logger)
 
     wandb.save(pretrain_checkpoint.best_model_path)
     # wadnb.save()
