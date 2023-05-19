@@ -15,6 +15,7 @@ architecture:
         preset: 'vit_small' # ['vit_small', 'vit_base', 'vit_large']
         patch_size: 8
         embed_dim: 768
+        pretrained: False
         depth: 12
         num_heads: 12
         mlp_ratio: 4
