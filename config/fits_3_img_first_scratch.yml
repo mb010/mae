@@ -32,7 +32,7 @@ data:
     classes: 10 
     # test_size: 0.3 
     batch_size: 128
-    data_path: '/state/partition1/fmae_data'
+    data_path: '/share/nas2_5/mbowles/_data'
     astroaugment: True
     fft: False
     png: False
