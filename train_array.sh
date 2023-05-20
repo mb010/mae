@@ -28,7 +28,7 @@ EXPERIMENT_CONFIGS=(
 # List of options
 
 EXPERIMENT_CONFIG=${EXPERIMENT_CONFIGS[$SLURM_ARRAY_TASK_ID]}
-if [[ EXPERIMENT_CONFIG == *'rgz'* ]]; then
+if [[ $EXPERIMENT_CONFIG == *'rgz'* ]]; then
     GLOBAL="global_rgzfits.yml"
 else
     GLOBAL="global_firstfits.yml"
