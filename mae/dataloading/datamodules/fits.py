@@ -150,15 +150,12 @@ class FITS_DataModule(Base_DataModule):
             )
         # Handle png parameter
         if self.png:
-            train_transform.append(
-                A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(self.data_type), p=1)
-            )
-            test_transform.append(
-                A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(self.data_type), p=1)
-            )
-            eval_transform.append(
-                A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(self.data_type), p=1)
-            )
+            train_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
+            test_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
+            eval_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
+        train_transform.append(A.ToTensorV2(dtype=self.data_type))
+        test_transform.append(A.ToTensorV2(dtype=self.data_type))
+        eval_transform.append(A.ToTensorV2(dtype=self.data_type))
 
         return A.Compose(train_transform), A.Compose(test_transform), A.Compose(eval_transform)
 
