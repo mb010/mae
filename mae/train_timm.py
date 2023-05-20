@@ -134,7 +134,7 @@ def init_argparse():
     )
     parser.add_argument("config", default="global.yml", help="Config file name.")
     parser.add_argument("dataconfig", default=None, help="Data config name.")
-    args = parser.parse_known_args()
+    args = parser.parse_args()
 
     return args
 
