@@ -148,6 +148,46 @@ class FITS_DataModule(Base_DataModule):
                     p=1,
                 )
             )
+        else:
+            train_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+            test_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+            eval_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
         # Handle png parameter
         if self.png:
             train_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
