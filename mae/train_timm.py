@@ -132,8 +132,8 @@ def init_argparse():
         usage="%(prog)s [OPTION] [CONFIG_NAME]...",
         description="Train MAE according to config as determined by CONFIG_NAME file.",
     )
-    parser.add_argument("config", default="global.yml", required=False, help="Config file name.")
-    parser.add_argument("dataconfig", default=None, required=False, help="Data config name.")
+    parser.add_argument("config", default="global.yml", help="Config file name.")
+    parser.add_argument("dataconfig", default=None, help="Data config name.")
     args = parser.parse_known_args()
 
     return vars(args)
