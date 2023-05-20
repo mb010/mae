@@ -167,7 +167,7 @@ class MAE(pl.LightningModule):
 
         # Turn (c x h x w) images into (n_patchs x patch_dim) flattened patches and
         # project to latent dimension
-        x = rearrange(imgs, "b c (n1 p1) (n2 p2) -> b (n1 n2) (p p c)", p=p)
+        x = rearrange(imgs, "b c (n1 p1) (n2 p2) -> b (n1 n2) (p1 p2 c)", p1=p, p2=p)
         return x
 
     # def unpatchify(self, x):
