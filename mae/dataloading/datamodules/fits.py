@@ -91,12 +91,6 @@ class FITS_DataModule(Base_DataModule):
 
         return repeated_arr
 
-    def _naive_png_norm(img, *kwargs):
-        img = np.where(img >= 0, img, 0)
-        img = img / np.amax(img)
-        img = img * 255
-        return img.astype(np.uint8).astype(self.data_type)
-
     def _build_transforms(self):
         # Handle fft and channel shape conditions
         if self.fft:
@@ -156,9 +150,15 @@ class FITS_DataModule(Base_DataModule):
             )
         # Handle png parameter
         if self.png:
-            train_transform.append(A.Lambda(name="png_norm", image=self._naive_png_norm, p=1))
-            test_transform.append(A.Lambda(name="png_norm", image=self._naive_png_norm, p=1))
-            eval_transform.append(A.Lambda(name="png_norm", image=self._naive_png_norm, p=1))
+            train_transform.append(
+                A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(self.data_type), p=1)
+            )
+            test_transform.append(
+                A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(self.data_type), p=1)
+            )
+            eval_transform.append(
+                A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(self.data_type), p=1)
+            )
 
         return A.Compose(train_transform), A.Compose(test_transform), A.Compose(eval_transform)
 
