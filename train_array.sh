@@ -13,25 +13,25 @@
 
 
 EXPERIMENT_CONFIGS=(
-    "fits_3_fft_first_pre.yml"
-    "fits_2_fft_first_pre.yml"
-    "fits_3_fft_first_scratch.yml"
-    "fits_2_fft_first_scratch.yml"
-    "fits_3_fft_first_scratch_noaug.yml"
-    "fits_3_img_first_scratch.yml" # Pretrained version of this?
-    "fits_3_fft_rgz_scratch.yml"
-    "png_3_fft_first_scratch.yml"
-    "png_3_img_first_scratch.yml"
-    "png_3_fft_first_scratch_noaug.yml"
+    "fits_3_fft_first_pre.yml" #0
+    "fits_2_fft_first_pre.yml" #1
+    "fits_3_fft_first_scratch.yml" #2
+    "fits_2_fft_first_scratch.yml" #3
+    "fits_3_fft_first_scratch_noaug.yml" #4
+    "fits_3_img_first_scratch.yml" #5 Pretrained version of this?
+    "fits_3_fft_rgz_scratch.yml" #6
+    "png_3_fft_first_scratch.yml" #7
+    "png_3_img_first_scratch.yml" #8
+    "png_3_fft_first_scratch_noaug.yml" #9
 )
 
 # List of options
 
 EXPERIMENT_CONFIG=${EXPERIMENT_CONFIGS[$SLURM_ARRAY_TASK_ID]}
-if [[ EXPERIMENT_CONFIG == *"rgz"* ]]; then
+if [[ EXPERIMENT_CONFIG == *'rgz'* ]]; then
     GLOBAL="global_rgzfits.yml"
 else
-    GLOBAL="gloal_firstfits.yml"
+    GLOBAL="global_firstfits.yml"
 fi
 
 # Accessing the option at the specified index
