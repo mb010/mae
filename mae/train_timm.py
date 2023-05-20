@@ -136,7 +136,7 @@ def init_argparse():
     parser.add_argument("dataconfig", default=None, help="Data config name.")
     args = parser.parse_known_args()
 
-    return vars(args)
+    return args
 
 
 def main():
