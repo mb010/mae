@@ -155,7 +155,7 @@ class FITS_DataModule(Base_DataModule):
             eval_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
         train_transform.append(AA.image_domain.ToTensor(dtype=self.data_type))
         test_transform.append(AA.image_domain.ToTensor(dtype=self.data_type))
-        eval_transform.append(AA.image_domainToTensor(dtype=self.data_type))
+        eval_transform.append(AA.image_domain.ToTensor(dtype=self.data_type))
 
         return A.Compose(train_transform), A.Compose(test_transform), A.Compose(eval_transform)
 
