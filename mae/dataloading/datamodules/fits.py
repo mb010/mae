@@ -91,7 +91,7 @@ class FITS_DataModule(Base_DataModule):
 
         return repeated_arr
 
-    def _naive_png_norm(img):
+    def _naive_png_norm(img, *kwargs):
         img = np.where(img >= 0, img, 0)
         img = img / np.amax(img)
         img = img * 255
