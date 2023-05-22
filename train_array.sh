@@ -10,6 +10,7 @@
 #SBATCH --job-name=F_MAE
 #SBATCH --array=0-9
 #SBATCH --output=logs/%A_%a.%x.out
+#SBATCH --exclude=compute-0-4
 
 
 EXPERIMENT_CONFIGS=(
