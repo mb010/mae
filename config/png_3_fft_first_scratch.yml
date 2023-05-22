@@ -35,7 +35,7 @@ data:
     data_path: '/share/nas2_5/mbowles/_data'
     astroaugment: True
     fft: True
-    png: Trie
+    png: True
 
 
 linear:
