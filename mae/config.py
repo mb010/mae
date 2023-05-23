@@ -91,3 +91,15 @@ def update_config(config):
         config["architecture"]["decoder"]["depth"] = 4
         config["architecture"]["decoder"]["heads"] = 8
         config["architecture"]["decoder"]["mlp_ratio"] = 4
+
+
+def load_config_finetune():
+    """Helper function to load yaml config file, convert to python dictionary and return."""
+
+    path = path_dict["config"] / "finetune.yml"
+
+    # load data-set specific config
+    with open(path, "r") as ymlconfig:
+        config = yaml.load(ymlconfig, Loader=yaml.FullLoader)
+
+    return config
