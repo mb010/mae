@@ -1,0 +1,16 @@
+finetune:
+  run_id: '' 
+  preset: 'none'
+  dataset: 'mb_fits'
+  n_layers: 0 # -1 finetunes all layers
+  n_classes: 2 
+  iterations: 10
+  lr_decay: 0.75
+  n_epochs: 300
+  batch_size: 64
+  val_size: 0.25
+  early_stopping: False
+  weight_decay: 0.005
+  head: 'linear'
+  depth: 2
+  width: 256
