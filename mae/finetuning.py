@@ -12,17 +12,32 @@ from architectures.models import MLP
 from model_timm import MAE
 
 
+def init_argparse():
+    """
+    Parse the config from the command line arguments
+    """
+    parser = argparse.ArgumentParser(
+        usage="%(prog)s [OPTION] [CONFIG_NAME]...",
+        description="Train MAE according to config as determined by CONFIG_NAME file.",
+    )
+    parser.add_argument("config", default="finetune.yml", help="Finetuning config file name.")
+    args = parser.parse_args()
+
+    return args
+
+
 def main():
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s: %(message)s",
     )
+    args = init_argparse()
 
     # Load paths
     path_dict = Path_Handler()._dict()
 
     # Load up finetuning config
-    config_finetune = load_config_finetune()
+    config_finetune = load_config_finetune(args.config)
 
     ## Run finetuning ##
     for seed in range(config_finetune["finetune"]["iterations"]):
