@@ -27,7 +27,6 @@ class Base_DataModule(pl.LightningDataModule):
         Args:
             path: path to dataset
             batch_size: batch size
-            dataloading_kwargs: kwargs for dataloader
         """
         super().__init__()
 
@@ -94,7 +93,6 @@ class STL10_DataModule(Base_DataModule):
     Args:
         path (str): Path to data folder.
         batch_size (int): Batch size for dataloaders.
-        dataloading_kwargs (dict): Keyword arguments to pass to dataloaders.
         **kwargs: Additional keyword arguments to pass to dataloaders.
     """
 

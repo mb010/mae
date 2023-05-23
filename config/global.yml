@@ -11,7 +11,7 @@ trainer:
   precision: 32 # [16, 32, 'bf16'], often overriden
   deterministic: True
 
-dataloading:
+data:
   num_workers: 8  # often overriden
   prefetch_factor: 30
   persistent_workers: False  # torch default is False
