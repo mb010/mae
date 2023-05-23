@@ -1,5 +1,5 @@
 finetune:
-  run_id: 'cxpk72eu' # Test run
+  run_id: ''
   preset: 'none'
   dataset: 'mb_fits'
   n_layers: 0 # -1 finetunes all layers
