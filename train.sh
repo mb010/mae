@@ -12,7 +12,3 @@
 # Source venv and call training
 source /share/nas2_5/mbowles/venv/bin/activate
 python /share/nas2_5/mbowles/mae/mae/train_timm.py
-
-# Clean up scratch disk
-echo "Removing /state/partition1/fmae_data/"
-rm -r /state/partition1/fmae_data

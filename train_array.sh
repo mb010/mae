@@ -14,8 +14,8 @@
 
 
 EXPERIMENT_CONFIGS=(
-    "fits_3_fft_first_pre.yml" #0
-    "fits_2_fft_first_pre.yml" #1
+    "fits_3_fft_first_pre.yml" #0 # Not currently used (small pretrained not available)
+    "fits_2_fft_first_pre.yml" #1 # Not currently used (small pretrained not available)
     "fits_3_fft_first_scratch.yml" #2
     "fits_2_fft_first_scratch.yml" #3
     "fits_3_fft_first_scratch_noaug.yml" #4
@@ -44,8 +44,3 @@ source /share/nas2_5/mbowles/venv/bin/activate
 python -W ignore /share/nas2_5/mbowles/mae/mae/train_timm.py \
     $GLOBAL \
     $EXPERIMENT_CONFIG
-
-
-# Clean up scratch disk
-echo ">>> Removing /state/partition1/fmae_data/"
-rm -r /state/partition1/fmae_data
