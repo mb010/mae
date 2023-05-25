@@ -1,6 +1,8 @@
 import wandb
 import pytorch_lightning as pl
 import logging
+import torch
+
 
 from pathlib import Path
 import argparse
@@ -11,6 +13,7 @@ from finetune.dataloading import finetune_datasets
 from config import load_config_finetune
 from architectures.models import MLP
 from model_timm import MAE
+from vit import ViT_Encoder
 
 
 def init_argparse():
@@ -45,14 +48,26 @@ def main():
     for seed in range(config_finetune["finetune"]["iterations"]):
         # for seed in range(1, 10):
 
-        if config_finetune["finetune"]["run_id"].lower() != "none":
-            experiment_dir = path_dict["files"] / config_finetune["finetune"]["run_id"] / "checkpoints"
-            model = MAE.load_from_checkpoint(experiment_dir / "last.ckpt")
-        else:
-            model = MAE.load_from_checkpoint("model.ckpt")
+        experiment_dir = path_dict["files"] / config_finetune["finetune"]["run_id"] / "checkpoints"
+        checkpoint = torch.load(experiment_dir / "last.ckpt")
+        encoder_weights = checkpoint["encoder"]
+        print(checkpoint.keys())
+        print(checkpoint.config)
+
+        encoder = ViT_Encoder(
+            img_size=config["data"]["img_size"],
+            in_chans=config["data"]["in_chans"],
+            patch_size=config["architecture"]["encoder"]["patch_size"],
+            embed_dim=config["architecture"]["encoder"]["embed_dim"],
+            depth=config["architecture"]["encoder"]["depth"],
+            num_heads=config["architecture"]["encoder"]["num_heads"],
+            mlp_ratio=config["architecture"]["encoder"]["mlp_ratio"],
+        )
+
+        encoder.load_state_dict(encoder_weights)
 
         ## Load up config from model to save correct hparams for easy logging ##
-        config = model.config
+        # config = model.config
         config.update(config_finetune)
         config["finetune"]["dim"] = model.encoder.dim
         # project_name = f"{config['project_name']}_finetune"
@@ -86,7 +101,7 @@ def main():
             nchan=config["data"]["in_chans"],
             png=config["data"]["png"],
         )
-        run_finetuning(config, model.encoder, finetune_datamodule, logger)
+        run_finetuning(config, encoder, finetune_datamodule, logger)
         logger.experiment.finish()
         wandb.finish()
 
