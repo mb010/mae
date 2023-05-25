@@ -70,6 +70,7 @@ class FITS_DataModule(Base_DataModule):
         self.batch_size = batch_size
         self.img_size = img_size
         self.data_type = {
+            "torch.float32": torch.float32,
             "16-mixed": torch.bfloat16,
             "bf16-mixed": torch.bfloat16,
             "32-true": torch.float32,
