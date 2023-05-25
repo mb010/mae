@@ -35,8 +35,8 @@ class FITS_DataModule(Base_DataModule):
 
     def __init__(
         self,
-        path,
-        batch_size: int,
+        path="",
+        batch_size: int = 32,
         num_workers: int = 1,
         prefetch_factor: int = 8,
         persistent_workers: bool = False,
