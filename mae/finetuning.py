@@ -97,8 +97,7 @@ def main():
         )
 
         finetune_datamodule = finetune_datasets[experiment_config["finetune"]["dataset"]](
-            experiment_config,
-            experiment_config["finetune"]["data_path"],
+            path=experiment_config["finetune"]["data_path"],
             batch_size=experiment_config["data"]["batch_size"],
             num_workers=experiment_config["dataloading"]["num_workers"],
             prefetch_factor=experiment_config["dataloading"]["prefetch_factor"],
@@ -108,8 +107,8 @@ def main():
             data_type=experiment_config["trainer"]["precision"],
             astroaugment=experiment_config["data"]["astroaugment"],
             fft=experiment_config["data"]["fft"],
-            nchan=experiment_config["data"]["in_chans"],
             png=experiment_config["data"]["png"],
+            nchan=experiment_config["data"]["in_chans"],
         )
         run_finetuning(experiment_config, encoder, finetune_datamodule, logger)
         logger.experiment.finish()
