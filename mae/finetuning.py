@@ -22,6 +22,7 @@ def init_argparse():
         description="Train MAE according to config as determined by CONFIG_NAME file.",
     )
     parser.add_argument("config", default="finetune.yml", help="Finetuning config file name.")
+    parser.add_argument("data_config", default="fits.yml", help="Data config for the given experiment.")
     args = parser.parse_args()
 
     return args
@@ -36,9 +37,24 @@ def main():
 
     # Load paths
     path_dict = Path_Handler()._dict()
+    paths = Path_Handler(data=args.data_config["data"]["data_path"])._dict()
 
     # Load up finetuning config
-    config_finetune = load_config_finetune(args.config)
+    config_finetune = load_config_finetune(
+        args.config,
+        args.config["finetune"]["data_path"],
+        batch_size=config["data"]["batch_size"],
+        num_workers=config["dataloading"]["num_workers"],
+        prefetch_factor=config["dataloading"]["prefetch_factor"],
+        persistent_workers=config["dataloading"]["persistent_workers"],
+        pin_memory=config["dataloading"]["pin_memory"],
+        img_size=config["data"]["img_size"],
+        data_type=config["trainer"]["precision"],
+        astroaugment=config["data"]["astroaugment"],
+        fft=config["data"]["fft"],
+        nchan=config["data"]["in_chans"],
+        png=config["data"]["png"],
+    )
 
     ## Run finetuning ##
     for seed in range(config_finetune["finetune"]["iterations"]):

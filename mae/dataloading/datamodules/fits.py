@@ -89,8 +89,6 @@ class FITS_DataModule(Base_DataModule):
         arr = arr[np.newaxis, :]
         return np.repeat(arr_3d, repetitions, axis=0)
 
-        return repeated_arr
-
     def _build_transforms(self):
         # Handle fft and channel shape conditions
         if self.fft:
@@ -196,7 +194,7 @@ class FITS_DataModule(Base_DataModule):
 
         return A.Compose(train_transform), A.Compose(test_transform), A.Compose(eval_transform)
 
-    def setup(self, stage=None):
+    def setup(self):
         self.data["train"] = FitsDataset(
             self.path,
             crop_size=self.img_size,
