@@ -86,6 +86,115 @@ class FITS_DataModule(Base_DataModule):
         self.MiraBest_FITS_root = MiraBest_FITS_root
         self.train_transform, self.test_transform, self.eval_transform = self._build_transforms()
 
+    def _repeat_array(self, arr, repetitions):
+        arr = arr[np.newaxis, :]
+        return np.repeat(arr, repetitions, axis=0)
+
+    def _build_transforms(self):
+        # Handle fft and channel shape conditions
+        if self.fft:
+            if self.nchan == 3:
+                out = [np.real, np.imag, np.angle]
+            elif self.nchan == 2:
+                out = [np.real, np.imag]
+        else:
+            out = [np.asarray for i in range(self.nchan)]
+        # Handle astroaugment and fft parameters
+        train_transform = [A.CenterCrop(self.img_size, self.img_size)]
+        test_transform = [A.CenterCrop(self.img_size, self.img_size)]
+        eval_transform = [A.CenterCrop(self.img_size, self.img_size)]
+        if self.astroaugment:
+            train_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(
+                        dropout_p=0.8,
+                        dropout_mag=0.5,  # RFI Overflagging
+                        noise_p=0.5,
+                        noise_mag=0.5,  # Noise Injection
+                        rfi_p=0.5,
+                        rfi_mag=1,
+                        rfi_prob=0.01,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+            test_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+            eval_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+        else:
+            train_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+            test_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+            eval_transform.append(
+                A.Lambda(
+                    name="UVAugmentation",
+                    image=AA.image_domain.radio.UVAugmentation(  # Fourrier transform the same way as before.
+                        dropout_p=0.0,  # RFI Overflagging
+                        noise_p=0.0,  # Noise Injection
+                        rfi_p=0.0,  # RFI injection
+                        fft=self.fft,
+                        out=out,
+                    ),
+                    p=1,
+                )
+            )
+        # Handle png parameter
+        if self.png:
+            train_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
+            test_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
+            eval_transform.append(A.Lambda(name="png_norm", image=AA.image_domain.NaivePNGnorm(), p=1))
+
+        return A.Compose(train_transform), A.Compose(test_transform), A.Compose(eval_transform)
+
     def setup(self, stage=None):
         self.data["train"] = FitsDataset(
             self.path,

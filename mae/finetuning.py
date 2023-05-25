@@ -109,6 +109,7 @@ def main():
             fft=experiment_config["data"]["fft"],
             png=experiment_config["data"]["png"],
             nchan=experiment_config["data"]["in_chans"],
+            test_size=experiment_config["finetune"]["val_size"],
         )
         run_finetuning(experiment_config, encoder, finetune_datamodule, logger)
         logger.experiment.finish()
