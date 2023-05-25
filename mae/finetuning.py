@@ -50,8 +50,9 @@ def main():
 
         experiment_dir = path_dict["files"] / config_finetune["finetune"]["run_id"] / "checkpoints"
         checkpoint = torch.load(experiment_dir / "last.ckpt")
-        encoder_weights = checkpoint["encoder"]
         print(checkpoint.keys())
+        print(checkpoint)
+        encoder_weights = checkpoint["encoder"]
         print(checkpoint.config)
 
         encoder = ViT_Encoder(
