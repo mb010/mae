@@ -13,7 +13,7 @@ from finetune.dataloading import finetune_datasets
 from config import load_config_finetune, load_config
 from architectures.models import MLP
 from model_timm import MAE
-from vit import ViT_Encoder
+from vit import ViT_Encoder, Transformer
 
 
 def init_argparse():
