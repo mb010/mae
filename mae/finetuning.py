@@ -25,6 +25,7 @@ def init_argparse():
         description="Train MAE according to config as determined by CONFIG_NAME file.",
     )
     parser.add_argument("config", default="finetune.yml", help="Finetuning config file name.")
+    parser.add_argument("data_config", default="fits.yml", help="Experiment data config file name.")
     args = parser.parse_args()
 
     return args
@@ -43,6 +44,7 @@ def main():
 
     # Load up finetuning config
     config_finetune = load_config_finetune(args.config)
+    experiment_config = load_config(str("global.yml"), str(args.data_config))
 
     ## Run finetuning ##
     for seed in range(config_finetune["finetune"]["iterations"]):
@@ -52,29 +54,26 @@ def main():
         checkpoint = torch.load(experiment_dir / "last.ckpt")
         state_dict = checkpoint["state_dict"]
         # Load config from checkpoint
-        print(checkpoint.keys())
-        print(checkpoint["hyper_parameters"].keys())
-
         config = checkpoint["hyper_parameters"]
 
         encoder = ViT_Encoder(
-            img_size=config["data"]["img_size"],
-            in_chans=config["data"]["in_chans"],
-            patch_size=config["architecture"]["encoder"]["patch_size"],
-            embed_dim=config["architecture"]["encoder"]["embed_dim"],
-            depth=config["architecture"]["encoder"]["depth"],
-            num_heads=config["architecture"]["encoder"]["num_heads"],
-            mlp_ratio=config["architecture"]["encoder"]["mlp_ratio"],
+            img_size=experiment_config["data"]["img_size"],
+            in_chans=experiment_config["data"]["in_chans"],
+            patch_size=experiment_config["architecture"]["encoder"]["patch_size"],
+            embed_dim=experiment_config["architecture"]["encoder"]["embed_dim"],
+            depth=experiment_config["architecture"]["encoder"]["depth"],
+            num_heads=experiment_config["architecture"]["encoder"]["num_heads"],
+            mlp_ratio=experiment_config["architecture"]["encoder"]["mlp_ratio"],
         )
 
         decoder = Transformer(
-            embed_dim=config["architecture"]["decoder"]["embed_dim"],
-            depth=config["architecture"]["decoder"]["depth"],
-            num_heads=config["architecture"]["decoder"]["num_heads"],
-            mlp_ratio=config["architecture"]["decoder"]["mlp_ratio"],
+            embed_dim=experiment_config["architecture"]["decoder"]["embed_dim"],
+            depth=experiment_config["architecture"]["decoder"]["depth"],
+            num_heads=experiment_config["architecture"]["decoder"]["num_heads"],
+            mlp_ratio=experiment_config["architecture"]["decoder"]["mlp_ratio"],
         )
 
-        model = MAE(encoder, decoder, **config["model"])
+        model = MAE(encoder, decoder, **experiment_config["model"])
         model.load_state_dict(state_dict)
 
         ## Load up config from model to save correct hparams for easy logging ##
