@@ -86,7 +86,7 @@ class FITS_DataModule(Base_DataModule):
         self.MiraBest_FITS_root = MiraBest_FITS_root
         self.train_transform, self.test_transform, self.eval_transform = self._build_transforms()
 
-    def setup(self):
+    def setup(self, stage=None):
         self.data["train"] = FitsDataset(
             self.path,
             crop_size=self.img_size,
