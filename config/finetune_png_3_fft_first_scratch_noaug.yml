@@ -14,3 +14,4 @@ finetune:
   head: 'linear'
   depth: 2
   width: 256
+  data_path: '/share/nas2_5/mbowles/MiraBest_FIRST'
