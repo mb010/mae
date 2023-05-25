@@ -48,8 +48,7 @@ echo ">>> Starting call for: ${FINETUNE_CONFIG}"
 # Source venv and call training
 source /share/nas2_5/mbowles/venv/bin/activate
 python -W ignore /share/nas2_5/mbowles/mae/mae/finetuning.py \
-    $FINETUNE_CONFIG \
-    $EXPERIMENT_CONFIG
+    $FINETUNE_CONFIG
 
 END=`date +%s`
 RUNTIME=$((END-START))

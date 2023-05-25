@@ -37,24 +37,10 @@ def main():
 
     # Load paths
     path_dict = Path_Handler()._dict()
-    paths = Path_Handler(data=args.data_config["data"]["data_path"])._dict()
+    # paths = Path_Handler(data=args.data["data"]["data_path"])._dict()
 
     # Load up finetuning config
-    config_finetune = load_config_finetune(
-        args.config,
-        args.config["finetune"]["data_path"],
-        batch_size=config["data"]["batch_size"],
-        num_workers=config["dataloading"]["num_workers"],
-        prefetch_factor=config["dataloading"]["prefetch_factor"],
-        persistent_workers=config["dataloading"]["persistent_workers"],
-        pin_memory=config["dataloading"]["pin_memory"],
-        img_size=config["data"]["img_size"],
-        data_type=config["trainer"]["precision"],
-        astroaugment=config["data"]["astroaugment"],
-        fft=config["data"]["fft"],
-        nchan=config["data"]["in_chans"],
-        png=config["data"]["png"],
-    )
+    config_finetune = load_config_finetune(args.config)
 
     ## Run finetuning ##
     for seed in range(config_finetune["finetune"]["iterations"]):
@@ -86,7 +72,21 @@ def main():
             config=config,
         )
 
-        finetune_datamodule = finetune_datasets[config["dataset"]](config)
+        finetune_datamodule = finetune_datasets[config["finetune"]["dataset"]](
+            config,
+            config["finetune"]["data_path"],
+            batch_size=config["data"]["batch_size"],
+            num_workers=config["dataloading"]["num_workers"],
+            prefetch_factor=config["dataloading"]["prefetch_factor"],
+            persistent_workers=config["dataloading"]["persistent_workers"],
+            pin_memory=config["dataloading"]["pin_memory"],
+            img_size=config["data"]["img_size"],
+            data_type=config["trainer"]["precision"],
+            astroaugment=config["data"]["astroaugment"],
+            fft=config["data"]["fft"],
+            nchan=config["data"]["in_chans"],
+            png=config["data"]["png"],
+        )
         run_finetuning(config, model.encoder, finetune_datamodule, logger)
         logger.experiment.finish()
         wandb.finish()
