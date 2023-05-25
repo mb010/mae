@@ -22,7 +22,6 @@ def init_argparse():
         description="Train MAE according to config as determined by CONFIG_NAME file.",
     )
     parser.add_argument("config", default="finetune.yml", help="Finetuning config file name.")
-    parser.add_argument("data_config", default="fits.yml", help="Data config for the given experiment.")
     args = parser.parse_args()
 
     return args
