@@ -10,7 +10,7 @@ import argparse
 from paths import Path_Handler
 from finetune.main import run_finetuning
 from finetune.dataloading import finetune_datasets
-from config import load_config_finetune
+from config import load_config_finetune, load_config
 from architectures.models import MLP
 from model_timm import MAE
 from vit import ViT_Encoder
