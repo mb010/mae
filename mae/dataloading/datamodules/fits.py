@@ -124,7 +124,7 @@ class FITS_DataModule(Base_DataModule):
         # List of (name, train_dataset) tuples to train linear evaluation layer
         self.data["eval_train"] = [
             {
-                "name": "MiraBest_FIRST_train",
+                "name": "MiraBest_FITS_train",
                 "n_classes": 2,
                 "data": MiraBest_FITS(
                     root=self.MiraBest_FITS_root,
