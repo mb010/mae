@@ -80,10 +80,10 @@ def main():
         # config = model.config
         config.update(config_finetune)
         config["finetune"]["dim"] = model.encoder.dim
-        # project_name = f"{config['project_name']}_finetune"
         project_name = f"FITS_MAE_finetune"
+        experiment_config["finetune"] = config["finetune"]
 
-        config["finetune"]["seed"] = seed
+        experiment_config["finetune"]["seed"] = seed
         pl.seed_everything(seed)
 
         # Initiate wandb logging
@@ -96,22 +96,22 @@ def main():
             config=config,
         )
 
-        finetune_datamodule = finetune_datasets[config["finetune"]["dataset"]](
-            config,
-            config["finetune"]["data_path"],
-            batch_size=config["data"]["batch_size"],
-            num_workers=config["dataloading"]["num_workers"],
-            prefetch_factor=config["dataloading"]["prefetch_factor"],
-            persistent_workers=config["dataloading"]["persistent_workers"],
-            pin_memory=config["dataloading"]["pin_memory"],
-            img_size=config["data"]["img_size"],
-            data_type=config["trainer"]["precision"],
-            astroaugment=config["data"]["astroaugment"],
-            fft=config["data"]["fft"],
-            nchan=config["data"]["in_chans"],
-            png=config["data"]["png"],
+        finetune_datamodule = finetune_datasets[experiment_config["finetune"]["dataset"]](
+            experiment_config,
+            experiment_config["finetune"]["data_path"],
+            batch_size=experiment_config["data"]["batch_size"],
+            num_workers=experiment_config["dataloading"]["num_workers"],
+            prefetch_factor=experiment_config["dataloading"]["prefetch_factor"],
+            persistent_workers=experiment_config["dataloading"]["persistent_workers"],
+            pin_memory=experiment_config["dataloading"]["pin_memory"],
+            img_size=experiment_config["data"]["img_size"],
+            data_type=experiment_config["trainer"]["precision"],
+            astroaugment=experiment_config["data"]["astroaugment"],
+            fft=experiment_config["data"]["fft"],
+            nchan=experiment_config["data"]["in_chans"],
+            png=experiment_config["data"]["png"],
         )
-        run_finetuning(config, encoder, finetune_datamodule, logger)
+        run_finetuning(experiment_config, encoder, finetune_datamodule, logger)
         logger.experiment.finish()
         wandb.finish()
 
