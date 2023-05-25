@@ -50,10 +50,12 @@ def main():
 
         experiment_dir = path_dict["files"] / config_finetune["finetune"]["run_id"] / "checkpoints"
         checkpoint = torch.load(experiment_dir / "last.ckpt")
+        state_dict = checkpoint["state_dict"]
+        # Load config from checkpoint
         print(checkpoint.keys())
-        print(checkpoint)
-        encoder_weights = checkpoint["encoder"]
-        print(checkpoint.config)
+        print(checkpoint["hyper_parameters"].keys())
+
+        config = checkpoint["hyper_parameters"]
 
         encoder = ViT_Encoder(
             img_size=config["data"]["img_size"],
@@ -65,7 +67,15 @@ def main():
             mlp_ratio=config["architecture"]["encoder"]["mlp_ratio"],
         )
 
-        encoder.load_state_dict(encoder_weights)
+        decoder = Transformer(
+            embed_dim=config["architecture"]["decoder"]["embed_dim"],
+            depth=config["architecture"]["decoder"]["depth"],
+            num_heads=config["architecture"]["decoder"]["num_heads"],
+            mlp_ratio=config["architecture"]["decoder"]["mlp_ratio"],
+        )
+
+        model = MAE(encoder, decoder, **config["model"])
+        model.load_state_dict(state_dict)
 
         ## Load up config from model to save correct hparams for easy logging ##
         # config = model.config
