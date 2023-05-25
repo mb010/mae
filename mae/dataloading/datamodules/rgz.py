@@ -3,6 +3,7 @@ import numpy as np
 import os
 import sys
 import torchvision.transforms as T
+import torch
 
 if sys.version_info[0] == 2:
     import cPickle as pickle
