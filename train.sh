@@ -3,9 +3,10 @@
 #SBATCH --time=7-00:00:00
 #SBATCH --constraint=A100
 #SBATCH --mail-user=micah.bowles@postgrad.manchester.ac.uk
-#SBATCH --nodes=6
-#SBATCH --ntasks-per-node=2
-#SBATCH --cpus-per-task=17
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=3
+#SBATCH --mem=750G
 #SBATCH --job-name=FMAE
 #SBATCH --output=logs/%j.%x.out
 #SBATCH --exclude=compute-0-4
