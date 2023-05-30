@@ -36,6 +36,8 @@ data:
     astroaugment: False
     fft: True
     png: False
+    pre_load: True
+    memmap: False
 
 
 linear:

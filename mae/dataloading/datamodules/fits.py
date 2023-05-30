@@ -48,6 +48,8 @@ class FITS_DataModule(Base_DataModule):
         fft: bool = True,  # TODO
         png: bool = False,  # TODO
         nchan: int = 3,  # TODO
+        pre_load: bool = False,
+        memmap: bool = False,
         **kwargs,
     ):
         super().__init__(
@@ -63,6 +65,8 @@ class FITS_DataModule(Base_DataModule):
         self.mu = (0.485, 0.456, 0.406)
         self.sig = (0.229, 0.224, 0.225)
         # Params
+        self.pre_load = pre_load
+        self.memmap = memmap
         self.astroaugment = astroaugment
         self.fft = fft
         self.png = png
@@ -203,6 +207,8 @@ class FITS_DataModule(Base_DataModule):
             transform=self.train_transform,
             data_type=self.data_type,
             aug_type="albumentations",
+            pre_load=self.pre_load,
+            memmap=self.memmap,
         )
         self.data["val"] = [
             (
@@ -214,6 +220,8 @@ class FITS_DataModule(Base_DataModule):
                     transform=self.test_transform,
                     data_type=self.data_type,
                     aug_type="albumentations",
+                    pre_load=self.pre_load,
+                    memmap=self.memmap,
                 ),
             )
         ]
@@ -227,6 +235,8 @@ class FITS_DataModule(Base_DataModule):
                     transform=self.test_transform,
                     data_type=self.data_type,
                     aug_type="albumentations",
+                    pre_load=self.pre_load,
+                    memmap=self.memmap,
                 ),
             )
         ]
@@ -241,6 +251,8 @@ class FITS_DataModule(Base_DataModule):
                     transform=self.eval_transform,
                     data_type=self.data_type,
                     aug_type="albumentations",
+                    pre_load=self.pre_load,
+                    memmap=self.memmap,
                 ),
             },
         ]
