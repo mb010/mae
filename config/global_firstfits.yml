@@ -5,14 +5,14 @@ seed: 42
 trainer:
   accelerator: 'gpu' # set to 1 to disable multi gpu training
   devices: 2
-  num_nodes: 6
+  num_nodes: 1
   strategy: 'ddp' # set to null to disable multi gpu training
   fast_dev_run: False # debugging mode
   precision: '32' # [16, 32, 'bf16'], often overriden
   deterministic: True
 
 dataloading:
-  num_workers: 17  # often overriden
+  num_workers: 3  # often overriden
   prefetch_factor: 30
   persistent_workers: False  # torch default is False
   pin_memory: True
