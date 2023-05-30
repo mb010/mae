@@ -10,6 +10,9 @@ trainer:
   fast_dev_run: False # debugging mode
   precision: '32' # [16, 32, 'bf16'], often overriden
   deterministic: True
+  gpus: 2
+  num_nodes: 4
+  accelerator: 'ddp'
 
 dataloading:
   num_workers: 17  # often overriden
