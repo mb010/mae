@@ -26,6 +26,21 @@ EXPERIMENT_CONFIGS=(
     "png_3_fft_first_scratch_noaug.yml" #9
 )
 
+RUN_IDS=(
+    "", #0
+    "", #1
+    "oaqiwt3k", #2
+    "ppbwji71", #3
+    "4cji819j", #4
+    "q1di58ss", #5
+    "75gi6jma", #6
+    "bmh3bctb", #7
+    "a5sani3c", #8
+    "4vgdl1ko", #9
+)
+
+WANDB_RUN_ID=${RUN_IDS[$SLURM_ARRAY_TASK_ID]}
+export $WANDB_RUN_ID
 # List of options
 
 EXPERIMENT_CONFIG=${EXPERIMENT_CONFIGS[$SLURM_ARRAY_TASK_ID]}
