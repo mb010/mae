@@ -1,5 +1,5 @@
 finetune:
-  run_id: 'ppbwji71'
+  run_id: '4vgdl1ko'
   preset: 'none'
   dataset: 'mb_fits'
   n_layers: 0 # -1 finetunes all layers

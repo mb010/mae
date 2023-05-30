@@ -1,5 +1,5 @@
 import yaml
-
+from typing import Optional
 from torch.optim import Adam, SGD
 
 from paths import Path_Handler
@@ -9,16 +9,20 @@ paths = Path_Handler()
 path_dict = paths._dict()
 
 
-def load_config():
+def load_config(config_name: str = "global.yml", data_config: Optional[str] = None):
     """Helper function to load yaml config file, convert to python dictionary and return."""
 
     # load global config
-    global_path = path_dict["config"] / "global.yml"
+    global_path = path_dict["config"] / config_name
     with open(global_path, "r") as ymlconfig:
         config = yaml.load(ymlconfig, Loader=yaml.FullLoader)
 
-    dataset = config["dataset"]
-    path = path_dict["config"] / f"{dataset}.yml"
+    if data_config is None:
+        dataset = config["dataset"]
+        path = path_dict["config"] / f"{dataset}.yml"
+    else:
+        dataset = data_config.split(".")[0]
+        path = path_dict["config"] / f"{dataset}.yml"
 
     # load data-set specific config
     with open(path, "r") as ymlconfig:
@@ -89,10 +93,10 @@ def update_config(config):
         config["architecture"]["decoder"]["mlp_ratio"] = 4
 
 
-def load_config_finetune():
+def load_config_finetune(config_name: str = "finetune.yml"):
     """Helper function to load yaml config file, convert to python dictionary and return."""
 
-    path = path_dict["config"] / "finetune.yml"
+    path = path_dict["config"] / config_name
 
     # load data-set specific config
     with open(path, "r") as ymlconfig:

@@ -13,7 +13,7 @@ class Path_Handler:
         )  # i.e. this repo
 
         path_dict["data"] = kwargs.get("data", path_dict["root"] / "_data")
-        path_dict["weights"] = kwargs.get("data", path_dict["root"] / "_data" / "weights")
+        path_dict["weights"] = kwargs.get("weights", path_dict["root"] / "_data" / "weights")
 
         path_dict["files"] = kwargs.get("files", path_dict["project"] / "files")
         path_dict["main"] = kwargs.get("main", path_dict["project"] / "mae")
@@ -27,6 +27,9 @@ class Path_Handler:
     def fill_dict(self):
         """Create dictionary of required paths"""
 
+        self.path_dict["fits_rgz"] = self.path_dict["data"] / "rgz_fits"
+        self.path_dict["fits_mb"] = self.path_dict["data"] / "MiraBest_FITS"
+        self.path_dict["fits"] = self.path_dict["data"] / "FIRST"
         self.path_dict["rgz"] = self.path_dict["data"] / "rgz"
         self.path_dict["mb"] = self.path_dict["data"] / "mb"
         self.path_dict["imagenette"] = self.path_dict["data"] / "imagenette-160"

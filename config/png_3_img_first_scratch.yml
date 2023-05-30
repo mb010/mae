@@ -1,0 +1,48 @@
+preset: 'none'
+
+model:
+    n_epochs: 600
+    warmup_epochs: 10  # Scheduler linear warmup
+    masking_ratio: 0.75
+    lr: 0.0003 
+    momentum: 0.9
+    weight_decay: 0.0005
+    beta_1: 0.9
+    beta_2: 0.95
+
+architecture:
+    encoder:
+        preset: 'vit_small' # ['vit_small', 'vit_base', 'vit_large']
+        patch_size: 8
+        embed_dim: 768
+        pretrained: False
+        depth: 12
+        num_heads: 12
+        mlp_ratio: 4
+  
+    decoder: 
+        preset: 'small' # ['none', 'default', 'small']
+        embed_dim: 512
+        depth: 8
+        num_heads: 16
+        mlp_ratio: 4
+data:
+    img_size: 128
+    in_chans: 3
+    classes: 10 
+    # test_size: 0.3 
+    batch_size: 128
+    data_path: '/share/nas2_5/mbowles/_data'
+    astroaugment: True
+    fft: False
+    png: True
+
+
+linear:
+    n_epochs: 10 # Start small. Scale up.
+    opt: 'adam'
+    lr: 0.0003
+    batch_size: 128
+    momentum: 0
+    nesterov: False
+    weight_decay: 0.5

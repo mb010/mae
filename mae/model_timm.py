@@ -8,8 +8,8 @@ import pytorch_lightning as pl
 from einops import repeat, rearrange
 from torch import nn
 
-from evaluation import Lightning_Eval
-from utils import CosineLinearWarmupScheduler
+from mae.evaluation import Lightning_Eval
+from mae.utils import CosineLinearWarmupScheduler
 
 
 class MAE(pl.LightningModule):
@@ -167,7 +167,7 @@ class MAE(pl.LightningModule):
 
         # Turn (c x h x w) images into (n_patchs x patch_dim) flattened patches and
         # project to latent dimension
-        x = rearrange(imgs, "b c (n1 p1) (n2 p2) -> b (n1 n2) (p p c)", p=p)
+        x = rearrange(imgs, "b c (n1 p1) (n2 p2) -> b (n1 n2) (p1 p2 c)", p1=p, p2=p)
         return x
 
     # def unpatchify(self, x):
@@ -264,7 +264,7 @@ class MAE(pl.LightningModule):
         # scaling_mask = torch.ones_like(loss)
         # scaling_mask[torch.argwhere(masked_patches == min_value)] = 0.2
 
-        self.log("train/loss", loss, on_step=False, on_epoch=True)
+        self.log("train/loss", loss, on_step=True, on_epoch=True)
         return loss
 
     def configure_optimizers(self):
