@@ -152,7 +152,7 @@ def main():
     config = load_config(str(args.config), str(args.dataconfig))
     # Merges both configs together. Indexes second config based on the 'project_name' parameter.
 
-    wandb.init(project=config["project_name"], config=config)
+    wandb.init(project=config["project_name"], config=config, resume="allow")
 
     config["run_id"] = str(wandb.run.id)
 
