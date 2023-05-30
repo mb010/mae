@@ -18,5 +18,5 @@ export NCCL_DEBUG=INFO
 # Source venv and call training
 source /share/nas2_5/mbowles/venv/bin/activate
 python /share/nas2_5/mbowles/mae/mae/train_timm.py \
-    fits_3_fft_first_scratch_noaug.yml \
-    global_firstfits.yml
+    global_firstfits.yml \
+    fits_3_fft_first_scratch_noaug.yml

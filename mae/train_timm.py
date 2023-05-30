@@ -186,6 +186,7 @@ def main():
         fft=config["data"]["fft"],
         nchan=config["data"]["in_chans"],
         png=config["data"]["png"],
+        pre_load=True,
     )
 
     ## Run pretraining ##
