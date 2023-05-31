@@ -4,7 +4,7 @@ import logging
 import torch
 import argparse
 
-from config import load_config
+from config import load_config, update_config
 from dataloading.datamodules import datasets
 from paths import Path_Handler, create_path
 from pytorch_lightning.callbacks import LearningRateMonitor
@@ -150,6 +150,7 @@ def main():
 
     ## Load up config from yml files ##
     config = load_config(str(args.config), str(args.dataconfig))
+    config = update_config(config)
     # Merges both configs together. Indexes second config based on the 'project_name' parameter.
 
     wandb.init(project=config["project_name"], config=config, resume="allow")

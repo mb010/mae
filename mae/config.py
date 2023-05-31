@@ -91,6 +91,10 @@ def update_config(config):
         config["architecture"]["decoder"]["depth"] = 4
         config["architecture"]["decoder"]["heads"] = 8
         config["architecture"]["decoder"]["mlp_ratio"] = 4
+    else:
+        raise ValueError(f"unknown decoder preset: {config['architecture']['encoder']['preset']}")
+
+    return config
 
 
 def load_config_finetune(config_name: str = "finetune.yml"):
