@@ -119,7 +119,7 @@ def run_pretraining(config, paths, datamodule, experiment_dir, wandb_logger):
 
     # Train model #
     pre_trainer.fit(model, datamodule)
-    pre_trainer.test(model, dataloaders=datamodule)
+    # pre_trainer.test(model, dataloaders=datamodule) # Testing currently not implemented
 
     return pretrain_checkpoint, model
 
