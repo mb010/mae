@@ -4,7 +4,7 @@ import logging
 import torch
 import argparse
 
-from config import load_config
+from config import load_config, update_config
 from dataloading.datamodules import datasets
 from paths import Path_Handler, create_path
 from pytorch_lightning.callbacks import LearningRateMonitor
@@ -119,7 +119,7 @@ def run_pretraining(config, paths, datamodule, experiment_dir, wandb_logger):
 
     # Train model #
     pre_trainer.fit(model, datamodule)
-    pre_trainer.test(model, dataloaders=datamodule)
+    # pre_trainer.test(model, dataloaders=datamodule) # Testing currently not implemented
 
     return pretrain_checkpoint, model
 
@@ -150,9 +150,10 @@ def main():
 
     ## Load up config from yml files ##
     config = load_config(str(args.config), str(args.dataconfig))
+    config = update_config(config)
     # Merges both configs together. Indexes second config based on the 'project_name' parameter.
 
-    wandb.init(project=config["project_name"], config=config)
+    wandb.init(project=config["project_name"], config=config, resume="allow")
 
     config["run_id"] = str(wandb.run.id)
 
@@ -186,6 +187,8 @@ def main():
         fft=config["data"]["fft"],
         nchan=config["data"]["in_chans"],
         png=config["data"]["png"],
+        pre_load=config["data"]["pre_load"],
+        memmap=config["data"]["memmap"],
     )
 
     ## Run pretraining ##

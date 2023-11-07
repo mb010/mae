@@ -21,7 +21,7 @@ architecture:
         mlp_ratio: 4
   
     decoder: 
-        preset: 'small' # ['none', 'default', 'small']
+        preset: 'default' # ['none', 'default', 'small']
         embed_dim: 512
         depth: 8
         num_heads: 16
@@ -36,6 +36,8 @@ data:
     astroaugment: False
     fft: True
     png: False
+    pre_load: True
+    memmap: False
 
 
 linear:
